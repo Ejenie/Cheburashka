@@ -1,1 +1,0 @@
-Logitech Webcam BRIO 4K Ultra HD Webcam by RBEPrinter on Thingiverse: https://www.thingiverse.com/thing:2988209
