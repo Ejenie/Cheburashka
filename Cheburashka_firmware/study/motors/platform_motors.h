@@ -18,7 +18,7 @@
 
 volatile int16_t platform_encoders[2] = {0, 0};
 /*----------------------*/
-//клаасс моторов платформы создавать н
+//клаасс моторов платформы создавать н-
 void _encoderL() {
   if (digitalRead(ML_ENC_PWM)) platform_encoders[0]++; else platform_encoders[0]--;
 }
