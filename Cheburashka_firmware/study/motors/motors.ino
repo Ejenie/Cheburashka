@@ -1,9 +1,12 @@
+#include "platform_motors.h"
+#include "serials.h"
+
 void setup() {
-  // put your setup code here, to run once:
+  _initSerials();
+  _initEnc();
 
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  _checkSerial3in();
 }
