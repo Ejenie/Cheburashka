@@ -5,16 +5,20 @@
 void setup() {
   _initSerials();
   _initEnc();
+  _initMotors();
   //_initServo();
 }
 
 void loop() {
   // _testServo();
-  _forwardEnc(500);
-  _stopm();
-  _rightEnc();
-  _stopm();
   //handOne();
-  //_checkInt();
+  //_checkEnc();
   //_checkSerial3In();
+  turnEnc(-200);
+  stopm(10000);
+  /*static uint32_t timer = millis();
+    while (millis() - timer < 5000 ) {
+    rotateRight(20);
+    }
+    _stopmLib();*/
 }
