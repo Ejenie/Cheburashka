@@ -1,24 +1,32 @@
 #include "platform_motors.h"
 #include "serials.h"
 #include "servos.h"
+//#include "mpu.h"
 
 void setup() {
   _initSerials();
   _initEnc();
   _initMotors();
   //_initServo();
+  //_initMPU();
 }
 
 void loop() {
-  // _testServo();
-  //handOne();
+  //_testServo();
+  //rotateRight(100);
+  //Serial.println("dvizh");
+  //checkMPU();
+  forwardEnc(1);
+  stopm(3000);
   //_checkEnc();
-  //_checkSerial3In();
-  turnEnc(-200);
-  stopm(10000);
-  /*static uint32_t timer = millis();
-    while (millis() - timer < 5000 ) {
-    rotateRight(20);
+  /*for ( int i = 0; i < 4; i++) {
+    Serial.println("dvizh1");
+    forwardEnc(300);
+    _checkEnc();
+    stopm(300);
+    turnEnc(TURN90);
+    _checkEnc();
+    stopm(300);
     }
-    _stopmLib();*/
+    stopm(5000);//*/
 }
