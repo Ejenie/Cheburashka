@@ -7,27 +7,55 @@ Servo shoulLeft;
 Servo shoulRight;
 Servo earRight;
 
+//shoulright 110 40
+
 void _initServo() {
-  handLeft.attach(6); //shoulLeft.attach(3);
-  handRight.attach(7); //shoulRight.attach(45);
-  earRight.attach(4);
+  handLeft.attach(3); shoulLeft.attach(6);
+  
+  handRight.attach(7); shoulRight.attach(45);
+  // earRight.attach(4);
 
   // shoulLeft.write(90);
-  //shoulRight.write(90);
-  // handRight.write(135);
-  // handLeft.write(180);
+  shoulRight.write(90);
+  handRight.write(50);
+  handLeft.write(80);
   //  earRight.write(90);
+}
+
+void handScream() {
+  for (int i = 50; i < 165; i++) {
+    handRight.write(i);
+    handLeft.write(160 - i);
+    delay(10);
+  }
+  for (int i = 90; i > 60; i--) {
+    shoulRight.write(i);
+    delay(20);
+  }//*/
 }
 
 void _testServo() {
   for (int _ = 0; _ < 2; _++) {
-    for (int i = 80; i < 180; i++) {
-      handLeft.write(i);
-      delay(10);
+    for (int i = 60; i < 140; i++) {
+      handRight.write(i);
+      delay(60);
     }
-    for (int i = 180; i > 80; i--) {
-      handLeft.write(i);
-      delay(10);
+    for (int i = 90; i < 140; i++) {
+      shoulRight.write(i);
+      delay(60);
+    }
+  }
+}
+
+void _testServoOne() {
+  for (int _ = 0; _ < 2; _++) {
+    for (int i = 40; i < 110; i++) {
+      shoulRight.write(i);
+      delay(60);
+    }
+    for (int i = 110; i > 40; i--) {
+      shoulRight.write(i);
+      delay(60);
     }
   }
 }

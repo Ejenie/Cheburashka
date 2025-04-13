@@ -1,0 +1,60 @@
+Removed Pin From Net: NetName=VIN Pin=VT2-2
+Removed Pin From Net: NetName=VIN Pin=VT3-2
+Removed Pin From Net: NetName=GND Pin=X3-2
+Change Component Designator: OldDesignator=R2 NewDesignator=R4
+Change Component Designator: OldDesignator=R3 NewDesignator=R5
+Change Component Designator: OldDesignator=R4 NewDesignator=R6
+Change Component Designator: OldDesignator=VT1 NewDesignator=VT3
+Change Component Designator: OldDesignator=VT2 NewDesignator=VT1
+Change Component Designator: OldDesignator=VT3 NewDesignator=VT2
+Change Component Designator: OldDesignator=X4 NewDesignator=X3
+Change component parameters: Designator = "X1" ("X1"); Footprint = "CWF-2"; UniqueID = "\YYPQTRBV" ("\YYPQTRBV")
+Change component parameters (AddParameter): Name = "Contact_1"; Value = "MAG1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_2"; Value = "GND"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Name"; Value = "DS1069-2M (CWF-2)"; VariantName = "[No Variations]"
+Change component parameters: Designator = "X2" ("X2"); Footprint = "CWF-2"; UniqueID = "\XHVFIZQC" ("\XHVFIZQC")
+Change component parameters (AddParameter): Name = "Contact_1"; Value = "MAG2"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_2"; Value = "GND"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Name"; Value = "DS1069-2M (CWF-2)"; VariantName = "[No Variations]"
+Added Component: Designator=R2(R0603)
+Add component (AddParameter): Name = "Manufacturer"; Value = "YAGEO"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Name"; Value = "RC0603FR-0710KL"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = "1%"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10ê"; VariantName = "[No Variations]"
+Added Component: Designator=R3(R0603)
+Add component (AddParameter): Name = "Manufacturer"; Value = "YAGEO"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Name"; Value = "RC0603FR-0710KL"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = "1%"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10ê"; VariantName = "[No Variations]"
+Added Component: Designator=X4(MW-3M)
+Add component (AddParameter): Name = "Contact_1"; Value = "Contact_1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact_2"; Value = "Contact_2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact_3"; Value = "Contact_3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Name"; Value = "DS1066-03M (MW-3M)"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=R2-1
+Added Pin To Net: NetName=GND Pin=R3-1
+Added Pin To Net: NetName=NetDD1_5 Pin=VD1-2
+Added Pin To Net: NetName=VOUT Pin=VD4-2
+Added Pin To Net: NetName=VIN Pin=VT1-3
+Added Pin To Net: NetName=VIN Pin=VT2-3
+Added Pin To Net: NetName=GND Pin=X1-2
+Added Pin To Net: NetName=GND Pin=X4-3
+Change Net Name : Old Net Name=NetR4_1 New Net Name=NetR6_1
+Added Pin To Net: NetName=NetR2_2 Pin=R2-2
+Added Pin To Net: NetName=NetR2_2 Pin=VT1-1
+Added Pin To Net: NetName=NetR2_2 Pin=X4-1
+Added Net: Name=NetR2_2
+Added Pin To Net: NetName=NetR3_2 Pin=R3-2
+Added Pin To Net: NetName=NetR3_2 Pin=VT2-1
+Added Pin To Net: NetName=NetR3_2 Pin=X4-2
+Added Net: Name=NetR3_2
+Added Pin To Net: NetName=NetVT1_2 Pin=VT1-2
+Added Pin To Net: NetName=NetVT1_2 Pin=X1-1
+Added Net: Name=NetVT1_2
+Added Pin To Net: NetName=NetVT2_2 Pin=VT2-2
+Added Pin To Net: NetName=NetVT2_2 Pin=X2-1
+Added Net: Name=NetVT2_2
+Added Member To Class: ClassName=Sheet1 Member=Component R5 3ê
+Added Member To Class: ClassName=Sheet1 Member=Component R6 4,7ê
+Added Member To Class: ClassName=Sheet1 Member=Component X1 DS1069-2M (CWF-2)
+Added Member To Class: ClassName=Sheet1 Member=Component X2 DS1069-2M (CWF-2)

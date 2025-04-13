@@ -1,0 +1,43 @@
+Change Component Designator: OldDesignator=X1 NewDesignator=X4
+Change Component Designator: OldDesignator=X2 NewDesignator=X5
+Added Component: Designator=VT2(D-PAK)
+Add component (AddParameter): Name = "Manufacturer"; Value = "UMW Youtai Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Name"; Value = "30N06"; VariantName = "[No Variations]"
+Added Component: Designator=VT3(D-PAK)
+Add component (AddParameter): Name = "Manufacturer"; Value = "UMW Youtai Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Name"; Value = "30N06"; VariantName = "[No Variations]"
+Added Component: Designator=X1(CWF-2)
+Add component (AddParameter): Name = "Contact_1"; Value = "PIN1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact_2"; Value = "PIN2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Name"; Value = "DS1069-2M (CWF-2)"; VariantName = "[No Variations]"
+Added Component: Designator=X2(CWF-2)
+Add component (AddParameter): Name = "Contact_1"; Value = "MAG1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact_2"; Value = "GND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Name"; Value = "DS1069-2M (CWF-2)"; VariantName = "[No Variations]"
+Added Component: Designator=X3(CWF-2)
+Add component (AddParameter): Name = "Contact_1"; Value = "MAG2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact_2"; Value = "GND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Name"; Value = "DS1069-2M (CWF-2)"; VariantName = "[No Variations]"
+Add Pin To Net: Unknown Pin: Pin VD1-3
+Add Pin To Net: Unknown Pin: Pin VD4-3
+Added Pin To Net: NetName=VIN Pin=VT2-2
+Added Pin To Net: NetName=VIN Pin=VT3-2
+Added Pin To Net: NetName=GND Pin=X2-2
+Added Pin To Net: NetName=GND Pin=X3-2
+Added Pin To Net: NetName=NetVT2_1 Pin=VT2-1
+Added Pin To Net: NetName=NetVT2_1 Pin=X2-1
+Added Net: Name=NetVT2_1
+Added Pin To Net: NetName=NetVT2_3 Pin=VT2-3
+Added Pin To Net: NetName=NetVT2_3 Pin=X1-1
+Added Net: Name=NetVT2_3
+Added Pin To Net: NetName=NetVT3_1 Pin=VT3-1
+Added Pin To Net: NetName=NetVT3_1 Pin=X3-1
+Added Net: Name=NetVT3_1
+Added Pin To Net: NetName=NetVT3_3 Pin=VT3-3
+Added Pin To Net: NetName=NetVT3_3 Pin=X1-2
+Added Net: Name=NetVT3_3
+Added Member To Class: ClassName=Sheet1 Member=Component VT2 30N06
+Added Member To Class: ClassName=Sheet1 Member=Component VT3 30N06
+Added Member To Class: ClassName=Sheet1 Member=Component X3 DS1069-2M (CWF-2)
+Added Member To Class: ClassName=Sheet1 Member=Component X4 DS1069-2M (CWF-2)
+Added Member To Class: ClassName=Sheet1 Member=Component X5 DS1069-2M (CWF-2)

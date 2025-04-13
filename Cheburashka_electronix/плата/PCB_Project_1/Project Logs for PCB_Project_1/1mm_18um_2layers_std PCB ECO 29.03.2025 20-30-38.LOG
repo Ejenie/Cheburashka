@@ -1,0 +1,7 @@
+Removed Pin From Net: NetName=NetVD2_1 Pin=VD2-2
+Removed Pin From Net: NetName=NetR6_1 Pin=VD2-3
+Change Component Footprint: Designator=VD2 Old Footprint=TO-277A New Footprint=DO-41 VERTICAL
+Change Component Comment : Designator=VD2 Old Comment=10S45SP New Comment=BZX85C5V1
+Change component parameters: Designator = "VD2" ("VD2"); Footprint = "TO-277A"; UniqueID = "\BNDINJFW" ("\BNDINJFW")
+Change component parameters (AddParameter): Name = "Name"; Value = "BZX85C5V1"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=NetR6_1 Pin=VD2-2

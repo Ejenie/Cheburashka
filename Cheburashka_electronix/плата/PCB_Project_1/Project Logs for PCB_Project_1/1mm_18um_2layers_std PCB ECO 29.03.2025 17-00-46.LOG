@@ -1,0 +1,9 @@
+Added Component: Designator=DD1(D2PAK_5)
+Add component (AddParameter): Name = "Name"; Value = "LM2596"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=VIN Pin=DD1-1
+Added Pin To Net: NetName=NetDD1_2 Pin=DD1-2
+Added Pin To Net: NetName=GND_OUT Pin=DD1-3
+Added Pin To Net: NetName=NetDD1_4 Pin=DD1-4
+Added Pin To Net: NetName=NetDD1_5 Pin=DD1-5
+Added Pin To Net: NetName=GND_OUT Pin=DD1-TP
+Added Member To Class: ClassName=Sheet1 Member=Component DD1 LM2596

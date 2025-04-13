@@ -1,0 +1,14 @@
+Removed Pin From Net: NetName=NetR1_2 Pin=S1-1
+Removed Member From Class: ClassName=Sheet1 Member=S1
+Change Component Designator: OldDesignator=X3 NewDesignator=X4
+Change Component Designator: OldDesignator=X4 NewDesignator=X5
+Change Component Designator: OldDesignator=X5 NewDesignator=X6
+Added Component: Designator=X3(JST-640456-2)
+Add component (AddParameter): Name = "Contact_1"; Value = "BUT_1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact_2"; Value = "BUT_2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Name"; Value = "640456-2"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=NetR1_2 Pin=X3-1
+Added Pin To Net: NetName=NetVD1_1 Pin=VD1-1
+Added Pin To Net: NetName=NetVD1_1 Pin=X3-2
+Added Net: Name=NetVD1_1
+Added Member To Class: ClassName=Sheet1 Member=Component X6 DS1069-2M (CWF-2)

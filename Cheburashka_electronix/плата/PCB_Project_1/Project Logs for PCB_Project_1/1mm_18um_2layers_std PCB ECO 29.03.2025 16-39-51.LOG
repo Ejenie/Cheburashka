@@ -1,0 +1,15 @@
+Change component parameters: Designator = "X4" ("X4"); Footprint = "MW-3M"; UniqueID = "\TXYGUADG" ("\TXYGUADG")
+Change component parameters (AddParameter): Name = "Contact_1"; Value = "PIN1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_2"; Value = "PIN2"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_3"; Value = "GND"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Name"; Value = "DS1066-03M (MW-3M)"; VariantName = "[No Variations]"
+Change Net Name : Old Net Name=GND New Net Name=GND_OUT
+Change Net Name : Old Net Name=NetR2_2 New Net Name=PIN1
+Change Net Name : Old Net Name=NetR3_2 New Net Name=PIN2
+Change Net Name : Old Net Name=NetVT1_2 New Net Name=MAG1
+Change Net Name : Old Net Name=NetVT2_2 New Net Name=MAG2
+Added Member To Class: ClassName=Sheet1 Member=Component R2 10ê
+Added Member To Class: ClassName=Sheet1 Member=Component R3 10ê
+Added Member To Class: ClassName=Sheet1 Member=Component VT3 BC847B
+Added Member To Class: ClassName=Sheet1 Member=Component X3 DS1069-2M (CWF-2)
+Added Member To Class: ClassName=Sheet1 Member=Component X4 DS1066-03M (MW-3M)

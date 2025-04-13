@@ -1,0 +1,8 @@
+Added Component: Designator=VD4(DO-41 VERTICAL)
+Add component (AddParameter): Name = "Name"; Value = "BZX85C5V1"; VariantName = "[No Variations]"
+Add Pin To Net: Unknown Pin: Pin VD1-1
+Add Pin To Net: Unknown Pin: Pin VD1-3
+Added Pin To Net: NetName=GND Pin=VD4-1
+Add Pin To Net: Unknown Pin: Pin VD4-3
+Add Class Member: Failed to add class member : Component VD1 1N4007
+Added Member To Class: ClassName=Sheet1 Member=Component VD4 BZX85C5V1

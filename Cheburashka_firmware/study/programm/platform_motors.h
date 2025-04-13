@@ -136,7 +136,7 @@ void rotateRight(int speedMotor) {
 void stopm(uint32_t t = 2000) {
   uint32_t timer = millis();
   while (millis() - timer < t) {
-    rotateRight(-30);
+    //rotateRight(-30);
     delay(200);
     digitalWrite(ML_A, LOW); digitalWrite(ML_B, LOW);
     digitalWrite(MR_A, LOW); digitalWrite(MR_B, LOW);

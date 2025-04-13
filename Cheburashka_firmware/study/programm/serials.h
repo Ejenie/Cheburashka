@@ -5,8 +5,8 @@ void _initSerials() {
 
 void _checkSerial3In() {
  // Serial.println(Serial3.available());
-  if (Serial3.available()) {
-    Serial.println(Serial3.read());
+  if (Serial.available()) {
+    Serial.println(Serial.read());
   }
 }
 
