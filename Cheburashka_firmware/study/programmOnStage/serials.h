@@ -27,7 +27,7 @@ void dataCheck() {
       oldData = actualData;
     }
     else data = "";
-    Serial.println("you send" + data);
+    Serial.println("you send " + data);
   }
 }
 
