@@ -275,7 +275,7 @@ void turnEncLeft(int16_t dist = -1200, int velMx = 220, float kp = 10, float kd 
   _checkEnc();
 }
 
-void turnTimeLeft(uint32_t t = 20000, int velMx = 18, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+void turnTimeLeft(uint32_t t, int velMx = 20, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
   zeroEnc();
   int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
   float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
@@ -285,26 +285,26 @@ void turnTimeLeft(uint32_t t = 20000, int velMx = 18, float kp = 10, float kd = 
   while (millis() - timer < t) {
     encLReg = abs(encL);
     encRReg = abs(encR);
-    vel = float(vel) * kv + 100;
+    vel = float(vel) * kv + 20;
     if (vel > velMx) vel = velMx;
-    kpReg = float(kp * vel) / 100.0;
+    //    kpReg = float(kp * vel) / 100.0;
     errEnc = (encRReg - encLReg);
-    iEnc += errEnc;
-    if (sgn(errOldEnc) != sgn(errEnc)) iEnc = 0;
-    u = float(errEnc) * kpReg + dEnc * kdReg + float(iEnc) * kiReg;
-    errOldEnc = errEnc;
-    rotateLeft(constrain((vel - u), -velMx, velMx));
+    //    iEnc += errEnc;
+    //    if (sgn(errOldEnc) != sgn(errEnc)) iEnc = 0;
+    u = float(errEnc) * kpReg;
+    //    errOldEnc = errEnc;
+    rotateLeft(-1 * constrain((vel - u), -velMx, velMx));
     rotateRight(constrain((vel + u), -velMx, velMx));//*/
-    /* Serial.print("vel and u end: ");
-      Serial.print(vel);
-      Serial.print("  ");
-      Serial.println(u);
-      Serial.println();*/
+    /*Serial.print("errEnc and u: ");
+    Serial.print(errEnc);
+    Serial.print("  ");
+    Serial.println(u);
+    Serial.println();*/
   }
   stopm(1000);
 }
 
-void spinRat(uint32_t t = 2) {
+void spinRat(uint32_t t) {
   turnTimeLeft(t);
 }
 

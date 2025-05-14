@@ -18,7 +18,7 @@ void conditionUpdate() {    //обновление текущего состоя
   else if (data == "orange" && !conditionFlag[3]) {
     condition = 3;
   }
-  else if (data == "aruco2" && !conditionFlag[4]) {
+  else if (data == "aruco1" && !conditionFlag[4]) {
     condition = 4;
   }
 }
@@ -43,11 +43,11 @@ void conditionBegin() {
     }*/
   hi();
   Serial.println("begin programm");
-  stopm(2500);
+  stopm(2000);
   handClap();
   uint32_t timer = millis();
   while (millis() - timer < 2000);
-  stopm(9000);
+  stopm(6000);
   turnServo();
 }
 
@@ -66,8 +66,6 @@ void genaCond() {
   handScream();
   earRight.write(0);
   earLeft.write(180);
-  uint32_t timer = millis();
-  while (millis() - timer < 2000);
   flagEmotion = false;
   condition = 0;
 }
@@ -78,29 +76,21 @@ void orangeCond() {
   flagDefault = true;
   conditionFlag[3] = true;
   handOrange();
-  uint32_t timer = millis();
-  while (millis() - timer < 8000);
   condition = 0;
 }
 void ratCond() {
   //beginServo(flagEmotion);
   flagDefault = true;
   conditionFlag[2] = true;
-  //handForw();
-  //spinRat(28900);
-  spinRat(26900);
+  spinRat(22000);
   spinRed();
-  stopm(5000);
- /* uint32_t timer = millis();
-  while (millis() - timer < 8000);*/
+  stopm(1000);
   condition = 0;
 }
 
 void arUco1Cond() {
   conditionFlag[4] = true;
   handClap();
-  uint32_t timer = millis();
-  while (millis() - timer < 2000);
   condition = 0;
 }
 

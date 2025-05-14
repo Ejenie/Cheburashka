@@ -18,7 +18,6 @@ void setup() {    //инициализация устройств
 void loop() {   //конечный автомат выполнения действий по сценарию
   /* handClap();
     stopm(3000);//*/
-
   conditionUpdate();
   switch (condition) {
     case 0:
