@@ -22,6 +22,16 @@ tish = AudioSegment.from_wav('tish.wav')
 end = AudioSegment.from_file('end.wav', format = 'wav')
 end = AudioSegment.from_wav('end.wav')
 
+colorsGena = [(73, 136, 86), (180, 255, 201)]
+colorsOrange = [(13, 122, 101), (20, 255, 255)]
+colorsRat = [(101, 151, 81), (123, 215, 255)]
+colorsGreen = [(59, 49, 57), (88, 95, 255)]
+
+numGena = 100000
+numOrange = 70000
+numRat = 20000
+numGreen = 20000
+
 window_name = "Fullscreen Image"
 def open_fullscreen_image(image_path):
     image = cv2.imread(image_path)
@@ -46,6 +56,7 @@ def sendToArduino(n):
         print('rat')
         for i in range(5):
             s.write(b'rat\n')
+        play(tish)
         play(rat)
     elif n == 3 and conditionFlag[2]:
         print('orange')
@@ -86,11 +97,11 @@ while True:
     
     #colorGena
     hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    maskGena = cv2.inRange(hsv_img,(73, 136, 86), (180, 255, 201))
+    maskGena = cv2.inRange(hsv_img,colorsGena[0], colorsGena[1])
     #cv2.imshow("maskRat", maskRat)
     mom = cv2.moments(maskGena, 255)
     try:
-        area = mom[' m00']
+        area = mom['m00']
         sum_y_cord = mom['m01']
         sum_x_cord = mom['m10']
         x = int(sum_x_cord/area)
@@ -98,15 +109,15 @@ while True:
         cv2.circle(img, (x,y), 20, (50,200,78),-1)
         print(x)
     except: pass    
-    if mom['m00'] > 100000:        
+    if mom['m00'] > numGena:        
         open_fullscreen_image('/home/ejenie/opencv/sources/samples/python/мордочкиБольшие/страх_вбое.png')     
         sendToArduino(1)
     
     #colorOrange
     hsv_img = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
-    maskOrange = cv2.inRange(hsv_img, (13, 122, 101), (20, 255, 255))
+    maskOrange = cv2.inRange(hsv_img, colorsOrange[0], colorsOrange[1])
     #cv2.imshow("maskOrange", maskOrange)
-    momOrange= cv2.moments(maskOrange, 255)
+    momOrange = cv2.moments(maskOrange, 255)
     try:
         areaOrange = momOrange['m00']
         sum_x_cordOrange = momOrange['m01']
@@ -114,13 +125,14 @@ while True:
         xOrange = int(sum_x_cordOrange/areaOrange)
         yOrange = int(sum_y_cordOrange/areaOrange)
         cv2.circle(img, (yOrange,xOrange), 10, (50,200,78),-1)
+
     except: pass    
-    if momOrange['m00'] > 70000:
+    if momOrange['m00'] > numOrange:
         open_fullscreen_image('/home/ejenie/opencv/sources/samples/python/мордочкиБольшие/улыбка_прямо.png')          
         sendToArduino(3)
     
     #colorRat
-    maskRat= cv2.inRange(hsv_img,(101, 151, 81), (123, 215, 255))#(101, 123, 37), (124, 211, 255))
+    maskRat= cv2.inRange(hsv_img, colorsRat[0], colorsRat[1])#(101, 123, 37), (124, 211, 255))
     momRat = cv2.moments(maskRat, 255)
     try:
         areaRat = momRat['m00']
@@ -130,12 +142,12 @@ while True:
         yRat = int(sum_y_cordRat/areaRat)
         cv2.circle(img, (xRat,yRat), 20, (250,20,78),-1)
         print(xRat)
-except: pass    
-    if momRat['m00'] > 20000:
+    except: pass    
+    if momRat['m00'] > numRat:
         sendToArduino(2)
     
     #colorGreen1
-    maskG= cv2.inRange(hsv_img,(59, 49, 57), (88, 95, 255))
+    maskG= cv2.inRange(hsv_img, colorsGreen[0], colorsGreen[1])
     momG = cv2.moments(maskG, 255)
     try:
         areaG = momG['m00']
@@ -143,10 +155,10 @@ except: pass
         sum_x_cordG = momG['m10']
         xG = int(sum_x_cordG/areaG)
         yG = int(sum_y_cordG/areaG)
-        cv2.circle(img, (xG,yG), 20, (250,20,78),-1)
+        cv2.circle(img, (xG,yG), 20, (250,20,78), -1)
         print("green", momG['m00'])
     except: pass    
-    if momG['m00'] > 20000:
+    if momG['m00'] > numGreen:
         sendToArduino(4)
 
     #aruco
