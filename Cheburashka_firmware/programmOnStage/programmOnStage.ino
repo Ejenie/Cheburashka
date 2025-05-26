@@ -7,6 +7,7 @@ void setup() {    //инициализация устройств
   _initServo();
   //_initMPU();
   _initMag();
+  _initDisplay();
 
   stopm(5000);
   conditionBegin();//*/

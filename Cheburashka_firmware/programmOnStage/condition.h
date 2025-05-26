@@ -1,5 +1,6 @@
 #include "platform_motors.h"
 #include "servos.h"
+#include "display.h"
 //#include "mpu.h"
 
 bool flagEmotion = true;
