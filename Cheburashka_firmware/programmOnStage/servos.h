@@ -27,7 +27,7 @@ void beginServo(bool fEmotion = true) {
 void _initServo() {
   handLeft.attach(2); shoulLeft.attach(4);
   handRight.attach(5); shoulRight.attach(3);
-  earLeft.attach(6); earRight.attach(7);
+  earLeft.attach(7); earRight.attach(6);
   turn.attach(45);
 
   beginServo();

@@ -7,7 +7,7 @@ void setup() {    //инициализация устройств
   _initServo();
   //_initMPU();
   _initMag();
-  _initDisplay();
+  //_initDisplay();
 
   stopm(5000);
   conditionBegin();//*/
@@ -17,7 +17,7 @@ void setup() {    //инициализация устройств
 }
 
 void loop() {   //конечный автомат выполнения действий по сценарию
-  /* handClap();
+  /*handClap();
     stopm(3000);//*/
   conditionUpdate();
   switch (condition) {

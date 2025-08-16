@@ -8,5 +8,5 @@ void setup() {
 }
 
 void loop() {
-  _checkSerial3in();
+  _checkEnc();
 }

@@ -187,14 +187,14 @@ void stopm(uint32_t t = 2000) {
   }
 }
 
-void forwardEnc(int16_t dist = 1200, int velMx = 40, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+void forwardEnc(int16_t dist = 1200, int velMx = 50, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
   zeroEnc();
   dist = (len_to_pulses(dist));
   int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
   float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
   velMx = abs(velMx);
 
-  while ((encLReg + encRReg) < abs(dist) * 2) {
+  /*while ((encLReg + encRReg) < abs(dist) * 2) {
     // Serial.println("beginRegForward");
     encLReg = abs(encL);
     encRReg = abs(encR);
@@ -209,11 +209,24 @@ void forwardEnc(int16_t dist = 1200, int velMx = 40, float kp = 10, float kd = 1
     errOldEnc = errEnc;
     rotateLeft(sgn(dist) * (vel + u));
     rotateRight( sgn(dist) * (vel - u));; //*/
-    /* Serial.print("vel and: ");
-      Serial.print(vel);
-      Serial.print("  ");
-      Serial.println(u);
-      Serial.println(); //*/
+  /* Serial.print("vel and: ");
+    Serial.print(vel);
+    Serial.print("  ");
+    Serial.println(u);
+    Serial.println(); //
+    }*/
+  while ((encLReg + encRReg) < abs(dist) * 2) {
+    encLReg = abs(encL);
+    encRReg = abs(encR);
+    if ((encLReg + encRReg) < abs(dist)) vel = (encLReg + encRReg) / 2; else vel = abs(dist) - (encLReg + encRReg) / 2;
+    vel += 20;
+    if (vel > velMx) vel = velMx;
+    errEnc = (encRReg - encLReg);
+    iEnc += errEnc;
+    u = float(errEnc) * kp + float(iEnc) * kiReg;
+    errOldEnc = errEnc;
+    rotateLeft(sgn(dist) * (vel + u));
+    rotateRight( sgn(dist) * (vel - u));;
   }
   stopm(1000);
 }
@@ -256,26 +269,13 @@ void turnEncLeft(int16_t dist = -1200, int velMx = 220, float kp = 10, float kd 
   velMx = abs(velMx);
 
   while ((encLReg) < abs(dist)) {
-    /* //  Serial.println("beginRegTurn");
-      encLReg = abs(encL);
-      encRReg = abs(encR);
-      vel = float(vel) * kv + 20;
-      if (vel > velMx) vel = velMx;
-      kpReg = float(kp * vel) / 100.0;
-      errEnc = (encRReg - encLReg);
-      iEnc += errEnc;
-      if (sgn(errOldEnc) != sgn(errEnc)) iEnc = 0;
-      u = float(errEnc) * kpReg + dEnc * kdReg + float(iEnc) * kiReg;
-      errOldEnc = errEnc;
-      rotateLeft(constrain((vel + u), -velMx, velMx));
-      rotateRight(constrain((vel - u), -velMx, velMx));*/
     speedControl(-velMx, velMx);
   }
   stopm(1000);
   _checkEnc();
 }
 
-void turnTimeLeft(uint32_t t, int velMx = 20, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+void turnTimeLeft(uint32_t t, int velMx = 30, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
   zeroEnc();
   int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
   float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
@@ -287,19 +287,15 @@ void turnTimeLeft(uint32_t t, int velMx = 20, float kp = 10, float kd = 1, float
     encRReg = abs(encR);
     vel = float(vel) * kv + 20;
     if (vel > velMx) vel = velMx;
-    //    kpReg = float(kp * vel) / 100.0;
     errEnc = (encRReg - encLReg);
-    //    iEnc += errEnc;
-    //    if (sgn(errOldEnc) != sgn(errEnc)) iEnc = 0;
     u = float(errEnc) * kpReg;
-    //    errOldEnc = errEnc;
     rotateLeft(-1 * constrain((vel - u), -velMx, velMx));
     rotateRight(constrain((vel + u), -velMx, velMx));//*/
     /*Serial.print("errEnc and u: ");
-    Serial.print(errEnc);
-    Serial.print("  ");
-    Serial.println(u);
-    Serial.println();*/
+      Serial.print(errEnc);
+      Serial.print("  ");
+      Serial.println(u);
+      Serial.println();*/
   }
   stopm(1000);
 }
@@ -310,13 +306,20 @@ void spinRat(uint32_t t) {
 
 bool flagRed = false;
 uint32_t timerRed = millis();
-void spinRed(uint32_t t = 20000, int velMx = 270, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+void spinRed(uint32_t t = 20000, int velMx = 20, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
   zeroEnc();
   int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
   float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
   velMx = abs(velMx);
   while (!flagRed) {
-    speedControl(-velMx, velMx);
+    encLReg = abs(encL);
+    encRReg = abs(encR);
+    vel = float(vel) * kv + 20;
+    if (vel > velMx) vel = velMx;
+    errEnc = (encRReg - encLReg);
+    u = float(errEnc) * kpReg;
+    rotateLeft(-1 * constrain((vel - u), -velMx, velMx));
+    rotateRight(constrain((vel + u), -velMx, velMx));
     dataCheck();
     if (data == "aruco1") {
       flagRed = true;

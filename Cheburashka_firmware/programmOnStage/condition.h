@@ -83,6 +83,7 @@ void ratCond() {
   //beginServo(flagEmotion);
   flagDefault = true;
   conditionFlag[2] = true;
+  stopm(3000);
   spinRat(22000);
   spinRed();
   stopm(1000);
