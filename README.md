@@ -1,2 +1,2 @@
 # Cheburashka
-# # Developed by Evgeniia Baranova
+## Developed by Evgeniia Baranova
