@@ -25,6 +25,7 @@
 #define REVERSE -1
 
 #define TURN90 343
+#define DIST 125
 
 volatile int16_t encL = 0, encR = 0;
 
@@ -237,7 +238,11 @@ void motorsAruco() {
   stopm(2000);
 }
 
-
+/*void toMark(int dist = DIST, int mL = 40, int mR = 40, float kp = 0.5, float kd = 0) {
+  static int errOld = 0;
+  int err = checkOrange() - dist; int u = err * kp + (err - errOld) * kd; errOld = err;
+  
+}*/
 
 /*-------------LIB MOTORS-------------*/
 void _stopmLib(uint32_t t = 1000) {

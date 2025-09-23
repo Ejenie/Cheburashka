@@ -55,9 +55,9 @@ void hi() {
 void handOrange() {
   for (int i = 50; i < 140; i++) {
     handRight.write(i);
-    handLeft.write(map(i, 50, 130, 120, 30));
+    handLeft.write(map(i, 50, 130, 135, 45));
     delay(20);
-  }
+  };
 
   for (int i = 90; i > 76; i--) {
     shoulRight.write(i);
@@ -65,8 +65,8 @@ void handOrange() {
     delay(20);
   }//*/
 
-  onMag(8000);
-  offMag();
+  /*onMag(8000);
+  offMag();*/
 }
 
 void handClap() {
@@ -78,7 +78,7 @@ void handClap() {
   stopm(200);
   for (int i = 0; i < 3; i++) {
     for (int i = 90; i > 65; i--) {
-      shoulRight.write(i);
+      shoulRight.write(i);  Q1
       shoulLeft.write(map(i, 90, 65, 90, 115));
       delay(15);
     }

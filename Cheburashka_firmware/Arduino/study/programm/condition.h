@@ -22,7 +22,7 @@ void conditionUpdate() {    //обновление текущего состоя
 void conditionBegin() {
   forwardEnc(1);
   Serial.println("begin programm");
-  for (int i = 90; i > 40; i--) {
+ /* for (int i = 90; i > 40; i--) {
     turn.write(i);
     delay(20);
   }
@@ -38,7 +38,7 @@ void conditionBegin() {
     turn.write(i);
     delay(20);
   }
-  turnEncRight(-100);
+  turnEncRight(-100);*/
   hi();
 }
 
@@ -57,7 +57,7 @@ void defaultCond() {    //стандратное состояние
 void faceCond() {
   flagDefault = true;
   conditionFlag[1] = true;
-  //handScream();
+  handClap();
   uint32_t timer = millis();
   while (millis() - timer < 5000);
   condition = 0;

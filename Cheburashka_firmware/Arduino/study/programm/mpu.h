@@ -1,5 +1,5 @@
 #include <Wire.h>
-#include <MPU6050.h>
+/*#include <MPU6050.h>
 
 MPU6050 mpu;
 int16_t ax, ay, az;
@@ -21,4 +21,4 @@ void _checkMPU() {
   Serial.print(gy); Serial.print('\t');
   Serial.println(gz);
   delay(5);
-}
+}*/
