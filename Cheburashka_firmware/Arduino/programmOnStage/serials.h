@@ -31,6 +31,67 @@ void dataCheck() {
   }
 }
 
+String mySubstr(const String& str, int start, int length = -1) {
+    // Проверка на пустую строку
+    if (str.length() == 0) {
+        return String();
+    }
+    
+    int strLen = str.length();
+    if (start < 0 || start >= strLen) {
+        return String(); 
+    }
+    if (length == -1 || start + length > strLen) {
+        length = strLen - start;
+    }
+    if (length <= 0) {
+        return String();
+    }
+    String result;
+    result.reserve(length);
+    
+    for (int i = 0; i < length; i++) {
+        result += str[start + i];
+    }
+    return result;
+}
+
+int myStoi(const String& str) {
+  int result = 0;
+  int sign = 1;
+  int i = 0;
+  while (i < str.length() && str[i] == ' ') {
+    i++;
+  }
+  if (i < str.length() && str[i] == '-') {
+    sign = -1;
+    i++;
+  } else if (i < str.length() && str[i] == '+') {
+    i++;
+  }
+  while (i < str.length() && str[i] >= '0' && str[i] <= '9') {
+    result = result * 10 + (str[i] - '0');
+    i++;
+  }
+  return result * sign;
+}
+
+int16_t dist = 0;
+String dataDist = "";
+void distUpdate() {
+  if (Serial.available()) {
+    String actualDataDist = Serial.readStringUntil('\n');
+    String distStr = mySubstr(actualDataDist, 6);
+    String dataDist = mySubstr(actualDataDist, 0, (actualDataDist.length() - distStr.length()));
+    dist = myStoi(distStr);
+    Serial.println(dataDist);
+  }
+}
+void _checkDistance() {
+  distUpdate();
+  Serial.println(dist);
+}
+
 int id = 0;
 int idOld = 0;
 void checkID() {

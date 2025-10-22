@@ -24,8 +24,20 @@ void conditionUpdate() {    //обновление текущего состоя
   }
 }
 
+
+void condRatReg(int velMx = 0) {
+  while (dataDist != "break") {
+    Serial.println(dataDist);
+    distUpdate();
+    //регулятор
+    
+    speedControl(-velMx, velMx);
+  }
+  Serial.println("condRatRegBreak");
+}
+
 void conditionBegin() {
-  forwardEnc(2);
+  forwardEnc(1);
   /*for (int i = 90; i > 40; i--) {
     turn.write(i);
     delay(20);
@@ -48,7 +60,6 @@ void conditionBegin() {
   handClap();
   uint32_t timer = millis();
   while (millis() - timer < 2000);
-  stopm(6000);
   turnServo();
 }
 
@@ -65,27 +76,30 @@ void genaCond() {
   flagDefault = true;
   conditionFlag[1] = true;
   handScream();
-  earRight.write(0);
-  earLeft.write(180);
+  earRightWrite(240, 5);
+  earLeftWrite(20, 5);
   flagEmotion = false;
   condition = 0;
 }
 
 void orangeCond() {
-  flagEmotion = true;
+  flagEmotion = false;
   beginServo(flagEmotion);
-  flagDefault = true;
+  flagDefault = false;
   conditionFlag[3] = true;
+  earRightWrite(120, 15);
+  earLeftWrite(100, 15);
   handOrange();
   condition = 0;
 }
 void ratCond() {
   //beginServo(flagEmotion);
-  flagDefault = true;
+  flagDefault = false;
   conditionFlag[2] = true;
   stopm(3000);
   spinRat(22000);
   spinRed();
+  //condRatReg();
   stopm(1000);
   condition = 0;
 }

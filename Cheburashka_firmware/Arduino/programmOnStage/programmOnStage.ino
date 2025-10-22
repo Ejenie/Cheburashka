@@ -14,11 +14,15 @@ void setup() {    //инициализация устройств
   uint32_t timer = millis();
 
   //ratCond();
+
+
 }
 
 void loop() {   //конечный автомат выполнения действий по сценарию
   /*handClap();
     stopm(3000);//*/
+  //distUpdate();
+  //  ratCond();
   conditionUpdate();
   switch (condition) {
     case 0:

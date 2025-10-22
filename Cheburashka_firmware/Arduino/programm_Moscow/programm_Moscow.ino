@@ -8,13 +8,12 @@ void setup() {    //инициализация устройств
   //_initMPU();
   _initMag();
 
-  /*stopm(1000);
-  conditionBegin();*/
-  turnServo();
+  stopm(1000);
+  conditionBegin();
 }
 
 void loop() {   //конечный автомат выполнения действий по сценарию
- /* conditionUpdate();
+  conditionUpdate();
   switch (condition) {
     case 0:
       defaultCond();

@@ -1,4 +1,5 @@
 /*----------------------*/
+#include "serials.h"
 #include <Motors.h>
 
 //left motor
@@ -51,7 +52,7 @@ void _initEnc() {
 }
 
 int16_t len_to_pulses(int n) {
-  return (n / (3.14 * 0.1)) * 380;
+  return (n / (3.14 * 0.1)) * 380 / 3 * 2;
 }
 
 void _checkEnc() {
@@ -238,11 +239,25 @@ void motorsAruco() {
   stopm(2000);
 }
 
+uint32_t timerReg = millis();
+void regAdd(int mL = 120, int mR = 120, float kp = 0.1, float kd = 0.5, float ki = 0.001, uint32_t t = 600) {
+  while (millis() - timerReg < 10000) {
+    int coord = idNow;
+    Serial.print("coord: ");
+    Serial.println(coord);
+    if (idNow > 80000) {
+      forwardEnc(1);
+    }
+    stopm(1000);
+  }
+  Serial.println("break");
+}
+
 /*void toMark(int dist = DIST, int mL = 40, int mR = 40, float kp = 0.5, float kd = 0) {
   static int errOld = 0;
   int err = checkOrange() - dist; int u = err * kp + (err - errOld) * kd; errOld = err;
-  
-}*/
+
+  }*/
 
 /*-------------LIB MOTORS-------------*/
 void _stopmLib(uint32_t t = 1000) {

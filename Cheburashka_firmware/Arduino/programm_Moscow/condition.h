@@ -1,5 +1,4 @@
 #include "platform_motors.h"
-#include "serials.h"
 #include "servos.h"
 #include "mpu.h"
 
@@ -8,25 +7,27 @@ static int condition = 0;
 
 void conditionUpdate() {    //обновление текущего состояния в зависимости от предыдущих действий и текущих данных с камеры
   dataCheck();
-  if (data == "face" && !conditionFlag[1]) {
+  if (data == "face" && !conditionFlag[0]) {
     condition = 1;
   }
-  else if ( data == "orange"  && !conditionFlag[2]) {
+  else if ( data == "orange"  && !conditionFlag[1]) {
     condition = 2;
   }
-  else if (data == "green" && !conditionFlag[3]) {
+  else if (data == "green" && !conditionFlag[2]) {
     condition = 3;
   }
-  else if (data == "greeting" && !conditionFlag[4]){
+  else if (data == "greeting" && !conditionFlag[3]) {
     condition = 4;
+  }
+  else if (data == "orangeAdd") {
+    condition = 2;
   }
 }
 
 void conditionBegin() {
- /* forwardEnc(1);
-  Serial.println("begin programm");*/
+  forwardEnc(1);
   turnServo();
-  turnEncRight(-100);
+ // turnEncRight(-100);
   hi();
 }
 
@@ -40,7 +41,7 @@ void defaultCond() {    //стандратное состояние
 
 void faceCond() {
   flagDefault = true;
-  conditionFlag[1] = true;
+  conditionFlag[0] = true;
   uint32_t timer = millis();
   while (millis() - timer < 2000);
   condition = 0;
@@ -48,31 +49,38 @@ void faceCond() {
 
 void orangeCond() {
   flagDefault = false;
-  conditionFlag[2] = true;
+  conditionFlag[1] = true;
   handOrange();
   uint32_t timer = millis();
-  while (millis() - timer < 2000);
+  while (millis() - timer < 10000);
   condition = 0;
 }
 
 void greenCond() {
-  flagDefault = false;
-  conditionFlag[3] = true;
+  if (conditionFlag[1]) NhandOrange();
+  flagDefault = true;
+  conditionFlag[2] = true;
+  Serial.println("clap");
   handClap();
-  Serial.println("clap");  
   uint32_t timer = millis();
-  while (millis() - timer < 1000);
+  while (millis() - timer < 5000);
+  Serial.println("scream");
   handScream();
-  Serial.println("scream");  
+  earRight.write(180);
+  earLeft.write(0);
   timer = millis();
-  while (millis() - timer < 3000);
+  while (millis() - timer < 5000);
+  Serial.println("break");
+  earRight.write(0);
+  earLeft.write(180);
+  talk();
   condition = 0;
 }
 
 void greetCond() {
   flagDefault = true;
-  conditionFlag[4] = true;
-  turnServo();  
+  conditionFlag[3] = true;
+  turnServo();
   Serial.println("greeting");
   hi();
   uint32_t timer = millis();

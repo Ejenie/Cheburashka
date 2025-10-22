@@ -27,15 +27,15 @@ void dataCheck() {
       oldData = actualData;
     }
     else data = "";
-    Serial.println("you send" + data);
+    Serial.println("you send " + data);
   }
 }
 
 int id = 0;
-int idOld = 0;
+uint32_t idOld = 0, idNow = 0;
 void checkID() {
   if (Serial.available()) {
-    int idNow = Serial.read();
+    idNow = Serial.read();
     if (idNow != idOld) {
       id = idNow;
       idOld = idNow;

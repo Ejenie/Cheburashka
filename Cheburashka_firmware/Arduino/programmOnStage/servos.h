@@ -1,5 +1,6 @@
 #include <Servo.h>
 #include "mag.h"
+#define dTimeDEF 5
 
 int pinServo[7] = {2, 3, 4, 5, 6, 7, 45};
 Servo handLeft;
@@ -11,139 +12,260 @@ Servo earLeft;
 Servo turn;
 
 //shoulright 110 40
+int shL = 90, shR = 90, hR = 50, hL = 120, eR = 110, eL = 80, tS = 90;
+void handRightWrite(int pos, uint32_t dTime = dTimeDEF) {
+  if (pos > hR) {
+    for (int i = hR; i < pos; i++) {
+      handRight.write(pos);
+      delay(dTime);
+    }
+  }
+  else {
+    for (int i = hR; i > pos; i--) {
+      handRight.write(pos);
+      delay(dTime);
+    }
+  }
+  hR = pos;
+}
 
+void handLeftWrite(int pos, uint32_t dTime = dTimeDEF) {
+  if (pos > hL) {
+    for (int i = hL; i < pos; i++) {
+      handLeft.write(pos);
+      delay(dTime);
+    }
+  }
+  else {
+    for (int i = hL; i > pos; i--) {
+      handLeft.write(pos);
+      delay(dTime);
+    }
+  }
+  hL = pos;
+}
+
+void shoulRightWrite(int pos, uint32_t dTime = dTimeDEF) {
+  if (pos > shR) {
+    for (int i = shR; i < pos; i++) {
+      shoulRight.write(pos);
+      delay(dTime);
+    }
+  }
+  else {
+    for (int i = shR; i > pos; i--) {
+      shoulRight.write(pos);
+      delay(dTime);
+    }
+  }
+  shR = pos;
+}
+
+void shoulLeftWrite(int pos, uint32_t dTime = dTimeDEF) {
+  if (pos > shL) {
+    for (int i = shL; i < pos; i++) {
+      shoulLeft.write(pos);
+      delay(dTime);
+    }
+  }
+  else {
+    for (int i = shL; i > pos; i--) {
+      shoulLeft.write(pos);
+      delay(dTime);
+    }
+  }
+  shL = pos;
+}
+
+void earRightWrite(int pos, uint32_t dTime = dTimeDEF) {
+  if (pos > eR) {
+    for (int i = eR; i < pos; i++) {
+      earRight.write(pos);
+      delay(dTime);
+    }
+  }
+  else {
+    for (int i = eR; i > pos; i--) {
+      earRight.write(pos);
+      delay(dTime);
+    }
+  }
+  eR = pos;
+}
+
+void earLeftWrite(int pos, uint32_t dTime = dTimeDEF) {
+  if (pos > eL) {
+    for (int i = eL; i < pos; i++) {
+      earLeft.write(pos);
+      delay(dTime);
+    }
+  }
+  else {
+    for (int i = eL; i > pos; i--) {
+      earLeft.write(pos);
+      delay(dTime);
+    }
+  }
+  eL = pos;
+}
 void beginServo(bool fEmotion = true) {
   if (fEmotion) {
-    shoulLeft.write(90);
-    shoulRight.write(90);
-    handRight.write(50);
-    handLeft.write(120);
-    earRight.write(110);
-    earLeft.write(80);
+    shoulLeftWrite(90, 15);
+    shoulRightWrite(90, 15);
+    handRightWrite(45, 8);
+    handLeftWrite(120, 8);
+    earRightWrite(120, 15);
+    earLeftWrite(100, 15);
     turn.write(90);
   }
 }
 
 void _initServo() {
-  handLeft.attach(2); shoulLeft.attach(4);
-  handRight.attach(5); shoulRight.attach(3);
-  earLeft.attach(7); earRight.attach(6);
+  handLeft.attach(2, 500, 2080); shoulLeft.attach(4);
+  handRight.attach(5, 700, 2540); shoulRight.attach(3);
+  earLeft.attach(6); earRight.attach(7);
   turn.attach(45);
 
   beginServo();
 }
 
 void hi() {
-  shoulRight.write(110);
+  shoulRightWrite(110);
   for (int j = 0; j < 2; j++) {
     for (int i = 80; i < 140; i++) {
-      handRight.write(i);
+      handRightWrite(i);
       delay(12);
     }
     for (int i = 140; i > 80; i--) {
-      handRight.write(i);
+      handRightWrite(i);
       delay(12);
     }
   }
   for (int i = 80; i > 50; i--) {
-    handRight.write(i);
+    handRightWrite(i);
     delay(12);
   }
-  shoulRight.write(90);
+  shoulRightWrite(90);
+}
+
+void talk() {
+  shoulRightWrite(110);
+  shoulLeftWrite(70);
+  for (int j = 0; j < 7; j++) {
+    for (int i = 80; i < 120; i++) {
+      handRightWrite(i);
+      handLeftWrite(map(i, 80, 120, 85, 45));
+      delay(12);
+    }
+    for (int i = 120; i > 80; i--) {
+      handRightWrite(i);
+      handLeftWrite(map(i, 120, 80, 45, 85));
+      delay(12);
+    }
+    delay(2500);
+  }
+  for (int i = 80; i > 50; i--) {
+    handRightWrite(i);
+    delay(12);
+  }
+  shoulRightWrite(90);
 }
 
 void handOrange() {
+  shoulLeftWrite(90, 15);
+  shoulRightWrite(90, 15);
   for (int i = 50; i < 140; i++) {
-    handRight.write(i);
-    handLeft.write(map(i, 50, 130, 135, 45));
+    handRightWrite(i);
+    handLeftWrite(map(i, 50, 130, 120, 30));
     delay(20);
-  };
+  }
 
   for (int i = 90; i > 76; i--) {
-    shoulRight.write(i);
-    shoulLeft.write(map(i, 90, 76, 90, 104));
+    shoulRightWrite(i);
+    shoulLeftWrite(map(i, 90, 76, 90, 104));
     delay(20);
   }//*/
 
-  /*onMag(8000);
-  offMag();*/
+  /* onMag(8000);
+    offMag();*/
 }
 
-void handClap() {
-  for (int i = 50; i < 140; i++) {
-    handRight.write(i);
-    handLeft.write(map(i, 50, 130, 120, 30));
-    delay(12);
-  }
-  stopm(200);
-  for (int i = 0; i < 3; i++) {
-    for (int i = 90; i > 65; i--) {
-      shoulRight.write(i);  Q1
-      shoulLeft.write(map(i, 90, 65, 90, 115));
-      delay(15);
-    }
-    for (int i = 65; i < 90; i++) {
-      shoulRight.write(i);
-      shoulLeft.write(map(i, 65, 90, 115, 90));
-      delay(15);
-    }
-    stopm(30);
-  }
-  for (int i = 140; i > 50; i--) {
-    handRight.write(i);
-    handLeft.write(map(i, 130, 50, 30, 120));
-    delay(20);
-  }
-}
-
-void handForw() {
-  for (int i = 50; i < 90; i++) {
-    handRight.write(i);
-    handLeft.write(180 - i);
+void NhandOrange() {
+  for (int i = 76; i < 90; i++) {
+    shoulRightWrite(i);
+    shoulLeftWrite(map(i, 76, 90, 104, 90));
     delay(20);
   }
 
-  for (int i = 90; i > 80; i--) {
-    shoulRight.write(i);
-    shoulLeft.write(90 + (90 - i));
+  for (int i = 60; i > 50; i--) {
+    handRightWrite(i);
+    handLeftWrite(map(i, 60, 50, 110, 100));
     delay(20);
-  }//*/
+  }
+  //*/
+
+  /* onMag(8000);
+    offMag();*/
 }
 
 static uint32_t timerTurn = millis();
 void turnServo() {
-  for (int i = 90; i < 120; i++) {
+  for (int i = 90; i < 150; i++) {
     turn.write(i);
     delay(30);
   }
-  for (int i = 120; i > 90; i--) {
+  for (int i = 150; i > 90; i--) {
     turn.write(i);
     delay(30);
   }
-  for (int i = 90; i > 60; i--) {
+  for (int i = 90; i > 30; i--) {
     turn.write(i);
     delay(30);
   }
-  for (int i = 60; i < 90; i++) {
+  for (int i = 30; i < 90; i++) {
     turn.write(i);
     delay(30);
   }
   timerTurn = millis();
 }
 
+void handClap(int dTime = 1) {
+  for (int i = 50; i < 140; i++) {
+    handRightWrite(i);
+    handLeftWrite(map(i, 50, 130, 120, 30));
+    delay(12);
+  }
+  stopm(200);
+  for (int i = 0; i < 8; i++) {
+    for (int i = 90; i > 65; i--) {
+      shoulRightWrite(i);
+      shoulLeftWrite(map(i, 90, 65, 90, 115));
+      delay(dTime);
+    }
+    for (int i = 65; i < 90; i++) {
+      shoulRightWrite(i);
+      shoulLeftWrite(map(i, 65, 90, 115, 90));
+      delay(dTime);
+    }
+    stopm(30);
+  }
+  for (int i = 140; i > 50; i--) {
+    handRightWrite(i);
+    handLeftWrite(map(i, 130, 50, 30, 120));
+    delay(20);
+  }
+}
+
 void handScream() {
+  handRightWrite(50);
+  handLeftWrite(120);
   for (int i = 50; i < 160; i++) {
-    handRight.write(i);
-    handLeft.write(map(i, 50, 160, 120, 0));
+    handRightWrite(i);
+    handLeftWrite(map(i, 50, 160, 120, 10));
     delay(10);
   }
-  shoulRight.write(60);
-  shoulLeft.write(110);
-  /*for (int i = 90; i > 60; i--) {
-    shoulRight.write(i);
-    shoulLeft.write(map(i, 90, 60, 120, 90));
-    delay(20);
-    }//*/
+  shoulRightWrite(60);
+  shoulLeftWrite(110);
 }
 
 void _testServo() {

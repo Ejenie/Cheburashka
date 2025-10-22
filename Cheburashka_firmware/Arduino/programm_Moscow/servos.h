@@ -1,6 +1,6 @@
 #include <Servo.h>
 #include "mag.h"
-#define dTime 5
+#define dTimeDEF 5
 
 int pinServo[7] = {2, 3, 4, 5, 6, 7, 45};
 Servo handLeft;
@@ -14,7 +14,7 @@ Servo turn;
 //shoulright 110 40
 
 int shL = 90, shR = 90, hR = 50, hL = 120, eR = 110, eL = 80, tS = 90;
-void handRightWrite(int pos) {
+void handRightWrite(int pos, uint32_t dTime = dTimeDEF) {
   if (pos > hR) {
     for (int i = hR; i < pos; i++) {
       handRight.write(pos);
@@ -30,7 +30,7 @@ void handRightWrite(int pos) {
   hR = pos;
 }
 
-void handLeftWrite(int pos) {
+void handLeftWrite(int pos, uint32_t dTime = dTimeDEF) {
   if (pos > hL) {
     for (int i = hL; i < pos; i++) {
       handLeft.write(pos);
@@ -46,7 +46,7 @@ void handLeftWrite(int pos) {
   hL = pos;
 }
 
-void shoulRightWrite(int pos) {
+void shoulRightWrite(int pos, uint32_t dTime = dTimeDEF) {
   if (pos > shR) {
     for (int i = shR; i < pos; i++) {
       shoulRight.write(pos);
@@ -62,7 +62,7 @@ void shoulRightWrite(int pos) {
   shR = pos;
 }
 
-void shoulLeftWrite(int pos) {
+void shoulLeftWrite(int pos, uint32_t dTime = dTimeDEF) {
   if (pos > shL) {
     for (int i = shL; i < pos; i++) {
       shoulLeft.write(pos);
@@ -78,7 +78,7 @@ void shoulLeftWrite(int pos) {
   shL = pos;
 }
 
-void earRightWrite(int pos) {
+void earRightWrite(int pos, uint32_t dTime = dTimeDEF) {
   if (pos > eR) {
     for (int i = eR; i < pos; i++) {
       earRight.write(pos);
@@ -94,7 +94,7 @@ void earRightWrite(int pos) {
   eR = pos;
 }
 
-void earLeftWrite(int pos) {
+void earLeftWrite(int pos, uint32_t dTime = dTimeDEF) {
   if (pos > eL) {
     for (int i = eL; i < pos; i++) {
       earLeft.write(pos);
@@ -110,12 +110,12 @@ void earLeftWrite(int pos) {
   eL = pos;
 }
 void beginServo() {
-  shoulLeftWrite(90);
-  shoulRightWrite(90);
-  handRightWrite(50);
-  handLeftWrite(120);
-  earRightWrite(110);
-  earLeftWrite(80);
+  shoulLeftWrite(90, 15);
+  shoulRightWrite(90, 15);
+  handRightWrite(45, 15);
+  handLeftWrite(120, 15);
+  earRightWrite(110, 15);
+  earLeftWrite(80, 15);
   turn.write(90);
 }
 
@@ -147,6 +147,29 @@ void hi() {
   shoulRightWrite(90);
 }
 
+void talk() {
+  shoulRightWrite(110);
+  shoulLeftWrite(70);
+  for (int j = 0; j < 7; j++) {
+    for (int i = 80; i < 120; i++) {
+      handRightWrite(i);
+      handLeftWrite(map(i, 80, 120, 85, 45));
+      delay(12);
+    }
+    for (int i = 120; i > 80; i--) {
+      handRightWrite(i);
+      handLeftWrite(map(i, 120, 80, 45, 85));
+      delay(12);
+    }
+    delay(2500);
+  }
+  for (int i = 80; i > 50; i--) {
+    handRightWrite(i);
+    delay(12);
+  }
+  shoulRightWrite(90);
+}
+
 void handOrange() {
   for (int i = 50; i < 140; i++) {
     handRightWrite(i);
@@ -164,45 +187,62 @@ void handOrange() {
     offMag();*/
 }
 
+void NhandOrange() {
+  for (int i = 76; i < 90; i++) {
+    shoulRightWrite(i);
+    shoulLeftWrite(map(i, 76, 90, 104, 90));
+    delay(20);
+  }
+  
+  for (int i = 140; i > 50; i--) {
+    handRightWrite(i);
+    handLeftWrite(map(i, 140, 50, 30, 120));
+    delay(20);
+  }
+  //*/
+
+  /* onMag(8000);
+    offMag();*/
+}
+
 static uint32_t timerTurn = millis();
 void turnServo() {
-  for (int i = 90; i < 120; i++) {
+  for (int i = 90; i < 150; i++) {
     turn.write(i);
     delay(30);
   }
-  for (int i = 120; i > 90; i--) {
+  for (int i = 150; i > 90; i--) {
     turn.write(i);
     delay(30);
   }
-  for (int i = 90; i > 60; i--) {
+  for (int i = 90; i > 30; i--) {
     turn.write(i);
     delay(30);
   }
-  for (int i = 60; i < 90; i++) {
+  for (int i = 30; i < 90; i++) {
     turn.write(i);
     delay(30);
   }
   timerTurn = millis();
 }
 
-void handClap() {
-  
+void handClap(int dTime = 1) {
   for (int i = 50; i < 140; i++) {
     handRightWrite(i);
     handLeftWrite(map(i, 50, 130, 120, 30));
     delay(12);
   }
   stopm(200);
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 8; i++) {
     for (int i = 90; i > 65; i--) {
       shoulRightWrite(i);
       shoulLeftWrite(map(i, 90, 65, 90, 115));
-      delay(8);
+      delay(dTime);
     }
     for (int i = 65; i < 90; i++) {
       shoulRightWrite(i);
       shoulLeftWrite(map(i, 65, 90, 115, 90));
-      delay(8);
+      delay(dTime);
     }
     stopm(30);
   }
