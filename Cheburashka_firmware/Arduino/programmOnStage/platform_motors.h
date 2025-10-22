@@ -297,7 +297,6 @@ void turnTimeLeft(uint32_t t, int velMx = 30, float kp = 10, float kd = 1, float
       Serial.println(u);
       Serial.println();*/
   }
-  stopm(1000);
 }
 
 void spinRat(uint32_t t) {

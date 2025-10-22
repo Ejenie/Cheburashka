@@ -108,6 +108,7 @@ void earLeftWrite(int pos, uint32_t dTime = dTimeDEF) {
   }
   eL = pos;
 }
+
 void beginServo(bool fEmotion = true) {
   if (fEmotion) {
     shoulLeftWrite(90, 15);
@@ -148,7 +149,7 @@ void hi() {
   shoulRightWrite(90);
 }
 
-void talk() {
+void circle() {
   shoulRightWrite(110);
   shoulLeftWrite(70);
   for (int j = 0; j < 7; j++) {
@@ -171,29 +172,53 @@ void talk() {
   shoulRightWrite(90);
 }
 
+void earsOpen() {
+  earRightWrite(120, 5);
+  earLeftWrite(100, 5);
+}
+
+void earsClose() {
+  earRightWrite(240, 5);
+  earLeftWrite(20, 5);
+}
+
+void earsFly(int n = 3) {
+  for (int i = 0; i < n; i++) {
+    for (int i = 120; i < 160; i++) {
+      earRightWrite(i, 5);
+      earLeftWrite(map(i, 120, 160, 100, 60));
+    }
+    delay(200);
+    for (int i = 160; i > 120; i--) {
+      earRightWrite(i, 5);
+      earLeftWrite(map(i, 160, 120, 60, 100));
+    }
+    delay(200);
+  }
+}
+
 void handOrange() {
   shoulLeftWrite(90, 15);
   shoulRightWrite(90, 15);
-  for (int i = 50; i < 140; i++) {
+  for (int i = 50; i < 120; i++) {
     handRightWrite(i);
-    handLeftWrite(map(i, 50, 130, 120, 30));
+    handLeftWrite(map(i, 50, 125, 120, 35));
     delay(20);
   }
 
-  for (int i = 90; i > 76; i--) {
+  for (int i = 90; i > 80; i--) {
     shoulRightWrite(i);
-    shoulLeftWrite(map(i, 90, 76, 90, 104));
+    shoulLeftWrite(map(i, 90, 80, 90, 100));
     delay(20);
   }//*/
 
   /* onMag(8000);
     offMag();*/
 }
-
 void NhandOrange() {
-  for (int i = 76; i < 90; i++) {
+  for (int i = 80; i < 90; i++) {
     shoulRightWrite(i);
-    shoulLeftWrite(map(i, 76, 90, 104, 90));
+    shoulLeftWrite(map(i, 80, 90, 100, 90));
     delay(20);
   }
 

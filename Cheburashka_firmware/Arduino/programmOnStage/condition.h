@@ -24,36 +24,18 @@ void conditionUpdate() {    //обновление текущего состоя
   }
 }
 
-
 void condRatReg(int velMx = 0) {
   while (dataDist != "break") {
     Serial.println(dataDist);
     distUpdate();
     //регулятор
-    
-    speedControl(-velMx, velMx);
+    //speedControl(-velMx, velMx);
   }
   Serial.println("condRatRegBreak");
 }
 
 void conditionBegin() {
   forwardEnc(1);
-  /*for (int i = 90; i > 40; i--) {
-    turn.write(i);
-    delay(20);
-    }
-    for (int i = 40; i < 90; i++) {
-    turn.write(i);
-    delay(20);
-    }
-    for (int i = 90; i < 140; i++) {
-    turn.write(i);
-    delay(20);
-    }
-    for (int i = 140; i > 90; i--) {
-    turn.write(i);
-    delay(20);
-    }*/
   hi();
   Serial.println("begin programm");
   stopm(2000);
@@ -61,6 +43,7 @@ void conditionBegin() {
   uint32_t timer = millis();
   while (millis() - timer < 2000);
   turnServo();
+  Serial.println("start serial");
 }
 
 bool flagDefault = true;
@@ -75,9 +58,10 @@ void defaultCond() {    //стандратное состояние
 void genaCond() {
   flagDefault = true;
   conditionFlag[1] = true;
+  uint32_t timer = millis();
+  while (millis() - timer < 5000);
   handScream();
-  earRightWrite(240, 5);
-  earLeftWrite(20, 5);
+  earsClose();
   flagEmotion = false;
   condition = 0;
 }
@@ -87,12 +71,12 @@ void orangeCond() {
   beginServo(flagEmotion);
   flagDefault = false;
   conditionFlag[3] = true;
-  earRightWrite(120, 15);
-  earLeftWrite(100, 15);
+  earsOpen();
   handOrange();
   condition = 0;
 }
 void ratCond() {
+  NhandOrange();
   //beginServo(flagEmotion);
   flagDefault = false;
   conditionFlag[2] = true;
@@ -111,6 +95,13 @@ void arUco1Cond() {
 }
 
 void greenCond() {
+  flagDefault = false;
+  conditionFlag[4] = true;
+  stopm(200);
+  earsFly(5); 
+  uint32_t timer = millis();
+  while(millis() - timer < 6000);
+  condition = 0; 
   /*conditionFlag[4] = true;
     handClap();
     uint32_t timer = millis();
@@ -120,24 +111,9 @@ void greenCond() {
 
 bool flagArUco = true;
 void arUcoCond() {
-  flagDefault = true;
-  conditionFlag[3] = true;
-  stopm(1000);
-  /* while (flagArUco) {
-     checkID();
-     switch (id) {
-       case 1:
-         forwardEnc(1);
-         break;
-       case 2:
-         turnEncRight();
-         break;
-       case 3:
-         flagArUco = false;
-         break;
-       default: break;
-     }
-    }
-    // _testServo();
-    condition = 0;*/
+  /*flagDefault = true;
+  conditionFlag[4] = true;
+  stopm(200);
+  earsFly();
+  condition = 0; //*/
 }

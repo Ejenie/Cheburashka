@@ -12,10 +12,6 @@ void setup() {    //инициализация устройств
   stopm(5000);
   conditionBegin();//*/
   uint32_t timer = millis();
-
-  //ratCond();
-
-
 }
 
 void loop() {   //конечный автомат выполнения действий по сценарию
