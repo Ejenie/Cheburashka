@@ -3,6 +3,16 @@
 #include "mpu.h"
 #include "serials.h"
 
+//left motor of foot
+#define MFL_EN 9
+#define MFL_IN1 29
+#define MFL_IN2 35
+
+//right motor of foot
+#define MFR_EN 8
+#define MFR_IN1 28
+#define MFR_IN2 34
+
 //left motor
 #define ML_EN 49
 #define ML_A 24
@@ -10,7 +20,7 @@
 #define ML_PWM 46
 
 #define ML_ENC_INT 20
-#define ML_ENC_DIG 8
+#define ML_ENC_DIG 26
 
 //right motor
 #define MR_EN 51
@@ -19,7 +29,7 @@
 #define MR_PWM 44
 
 #define MR_ENC_INT 21
-#define MR_ENC_DIG 9
+#define MR_ENC_DIG 27
 
 #define VEL_L 70
 #define VEL_R 70
@@ -110,6 +120,49 @@ void _initMotors() {
   pinMode(MR_B, OUTPUT);
   pinMode(MR_PWM, OUTPUT);
   digitalWrite(MR_EN, HIGH);
+
+  //motors of foots
+  pinMode(MFL_EN, OUTPUT);
+  pinMode(MFL_IN1, OUTPUT);
+  pinMode(MFL_IN2, OUTPUT);
+  pinMode(MFR_EN, OUTPUT);
+  pinMode(MFR_IN1, OUTPUT);
+  pinMode(MFR_IN2, OUTPUT);
+}
+
+void motorsFoots(int mL = 170, int mR = 170, uint32_t t = 500) {
+  analogWrite(MFL_EN, mL);
+  if (mL > 0) {
+    digitalWrite(MFL_IN1, LOW);
+    digitalWrite(MFL_IN2, HIGH);
+  }
+  else {
+    digitalWrite(MFL_IN1, HIGH);
+    digitalWrite(MFL_IN2, LOW);
+  }
+  //
+  analogWrite(MFR_EN, mR);
+  if (mR > 0) {
+    digitalWrite(MFR_IN1, LOW);
+    digitalWrite(MFR_IN2, HIGH);
+  }
+  else {
+    digitalWrite(MFR_IN1, HIGH);
+    digitalWrite(MFR_IN2, LOW);
+  }
+}
+
+void movement_of_foots(uint32_t t = 500) {
+   static uint32_t timer = millis();
+  if ((millis() - timer) < 550) {
+    motorsFoots(-220, 140);
+  }
+  else if ((millis() - timer) < 900) {
+    motorsFoots(145, -130);
+  }
+  else {
+    timer = millis();
+  }
 }
 
 int sgn(int n) {
@@ -164,7 +217,8 @@ void speedControl(int rpmL, int rpmR, float kPspeed = 0.1, float kIspeed = 0.1) 
 
   float errL = (rpmL - speedL), errR = (rpmR - speedR);
   float uL = errL * kPspeed, uR = errR * kPspeed;
-
+  
+  movement_of_foots();
   rotateLeft(uL); rotateRight(uR);
   /* Serial.print("speedL: ");
     Serial.print(speedL);
@@ -216,9 +270,10 @@ void forwardEnc(int16_t dist = 1200, int velMx = 50, float kp = 10, float kd = 1
     Serial.println(); //
     }*/
   while ((encLReg + encRReg) < abs(dist) * 2) {
+    movement_of_foots();
     encLReg = abs(encL);
     encRReg = abs(encR);
-    if ((encLReg + encRReg) < abs(dist)) vel = (encLReg + encRReg) / 2; else vel = abs(dist) - (encLReg + encRReg) / 2;
+    if ((encLReg + encRReg) < abs(dist)*1.5) vel = (encLReg + encRReg) / 2; else vel = abs(dist) - (encLReg + encRReg) / 2;
     vel += 20;
     if (vel > velMx) vel = velMx;
     errEnc = (encRReg - encLReg);
@@ -226,9 +281,12 @@ void forwardEnc(int16_t dist = 1200, int velMx = 50, float kp = 10, float kd = 1
     u = float(errEnc) * kp + float(iEnc) * kiReg;
     errOldEnc = errEnc;
     rotateLeft(sgn(dist) * (vel + u));
-    rotateRight( sgn(dist) * (vel - u));;
+    rotateRight(sgn(dist) * (vel - u));;
   }
-  stopm(1000);
+  motorsFoots(-70,-70);
+  stopm(300);
+  motorsFoots(0,0);
+  stopm(40);
 }
 
 void turnEncRight(int16_t dist = 343, int velMx = 40, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
@@ -283,6 +341,7 @@ void turnTimeLeft(uint32_t t, int velMx = 30, float kp = 10, float kd = 1, float
   uint32_t timer = millis();
 
   while (millis() - timer < t) {
+    movement_of_foots();
     encLReg = abs(encL);
     encRReg = abs(encR);
     vel = float(vel) * kv + 20;
@@ -303,14 +362,15 @@ void spinRat(uint32_t t) {
   turnTimeLeft(t);
 }
 
-bool flagRed = false;
+bool flagToGreen = false;
 uint32_t timerRed = millis();
-void spinRed(uint32_t t = 20000, int velMx = 20, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+void spinToGreen(uint32_t t = 20000, int velMx = 20, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
   zeroEnc();
   int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
   float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
   velMx = abs(velMx);
-  while (!flagRed) {
+  while (!flagToGreen) {
+    movement_of_foots();
     encLReg = abs(encL);
     encRReg = abs(encR);
     vel = float(vel) * kv + 20;
@@ -321,7 +381,30 @@ void spinRed(uint32_t t = 20000, int velMx = 20, float kp = 10, float kd = 1, fl
     rotateRight(constrain((vel + u), -velMx, velMx));
     dataCheck();
     if (data == "aruco1") {
-      flagRed = true;
+      flagToGreen = true;
+      motorsFoots(0,0);
+    }
+  }
+}
+
+bool flagToRat = false;
+void regRat(int velMx = 20, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+  zeroEnc();
+  int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
+  float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
+  velMx = abs(velMx);
+  while (!flagToRat) {
+    encLReg = abs(encL);
+    encRReg = abs(encR);
+    vel = float(vel) * kv + 20;
+    if (vel > velMx) vel = velMx;
+    errEnc = (encRReg - encLReg);
+    u = float(errEnc) * kpReg;
+    rotateLeft(-1 * constrain((vel - u), -velMx, velMx));
+    rotateRight(constrain((vel + u), -velMx, velMx));
+    dataCheck();
+    if (dataDist == "break") {
+      flagToRat = true;
     }
   }
 }

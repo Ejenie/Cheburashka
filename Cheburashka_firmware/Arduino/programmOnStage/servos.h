@@ -113,8 +113,8 @@ void beginServo(bool fEmotion = true) {
   if (fEmotion) {
     shoulLeftWrite(90, 15);
     shoulRightWrite(90, 15);
-    handRightWrite(45, 8);
-    handLeftWrite(120, 8);
+    handRightWrite(70, 8);
+    handLeftWrite(95, 8);
     earRightWrite(120, 15);
     earLeftWrite(100, 15);
     turn.write(90);
@@ -142,7 +142,7 @@ void hi() {
       delay(12);
     }
   }
-  for (int i = 80; i > 50; i--) {
+  for (int i = 80; i > 70; i--) {
     handRightWrite(i);
     delay(12);
   }
@@ -200,9 +200,9 @@ void earsFly(int n = 3) {
 void handOrange() {
   shoulLeftWrite(90, 15);
   shoulRightWrite(90, 15);
-  for (int i = 50; i < 120; i++) {
+  for (int i = 70; i < 120; i++) {
     handRightWrite(i);
-    handLeftWrite(map(i, 50, 125, 120, 35));
+    handLeftWrite(map(i, 70, 125, 95, 35));
     delay(20);
   }
 
@@ -222,9 +222,9 @@ void NhandOrange() {
     delay(20);
   }
 
-  for (int i = 60; i > 50; i--) {
+  for (int i = 60; i > 70; i--) {
     handRightWrite(i);
-    handLeftWrite(map(i, 60, 50, 110, 100));
+    handLeftWrite(map(i, 60, 70, 110, 95));
     delay(20);
   }
   //*/
@@ -255,9 +255,9 @@ void turnServo() {
 }
 
 void handClap(int dTime = 1) {
-  for (int i = 50; i < 140; i++) {
+  for (int i = 70; i < 140; i++) {
     handRightWrite(i);
-    handLeftWrite(map(i, 50, 130, 120, 30));
+    handLeftWrite(map(i, 70, 130, 95, 30));
     delay(12);
   }
   stopm(200);
@@ -274,9 +274,9 @@ void handClap(int dTime = 1) {
     }
     stopm(30);
   }
-  for (int i = 140; i > 50; i--) {
+  for (int i = 140; i > 70; i--) {
     handRightWrite(i);
-    handLeftWrite(map(i, 130, 50, 30, 120));
+    handLeftWrite(map(i, 130, 70, 30, 95));
     delay(20);
   }
 }

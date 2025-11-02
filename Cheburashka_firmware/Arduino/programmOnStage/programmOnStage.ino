@@ -15,10 +15,6 @@ void setup() {    //инициализация устройств
 }
 
 void loop() {   //конечный автомат выполнения действий по сценарию
-  /*handClap();
-    stopm(3000);//*/
-  //distUpdate();
-  //  ratCond();
   conditionUpdate();
   switch (condition) {
     case 0:

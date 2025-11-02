@@ -25,12 +25,7 @@ void conditionUpdate() {    //обновление текущего состоя
 }
 
 void condRatReg(int velMx = 0) {
-  while (dataDist != "break") {
-    Serial.println(dataDist);
-    distUpdate();
-    //регулятор
-    //speedControl(-velMx, velMx);
-  }
+  regRat();
   Serial.println("condRatRegBreak");
 }
 
@@ -82,7 +77,7 @@ void ratCond() {
   conditionFlag[2] = true;
   stopm(3000);
   spinRat(22000);
-  spinRed();
+  spinToGreen();
   //condRatReg();
   stopm(1000);
   condition = 0;
