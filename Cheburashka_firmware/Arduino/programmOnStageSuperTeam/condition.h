@@ -9,7 +9,7 @@ static int condition = 0;
 
 void conditionUpdate() {    //обновление текущего состояния в зависимости от предыдущих действий и текущих данных с камеры
   dataCheck();
-  if (data == "gena" && !conditionFlag[1]) {
+  if (data == "pink" && !conditionFlag[1]) {
     condition = 1;
     timerRed = millis();
   }
@@ -50,7 +50,29 @@ void defaultCond() {    //стандратное состояние
   }
 }
 
-void genaCond() {
+void pinkCond() {
+  flagEmotion = false;
+  beginServo(flagEmotion);
+  Serial.println("pink cond");
+  //forwardEnc(1, 0.2);
+  motorsFootStop();
+  stopm(2000);
+  uint32_t timer = millis();
+  while (millis() - timer < 2000);
+  condition = 0;
+}
+
+void orangeCond() {
+  flagEmotion = true;
+  beginServo(flagEmotion);
+  flagDefault = false;
+  conditionFlag[3] = true;
+  earsFly();
+  handClap();
+  handOrange();
+  condition = 0;
+}
+void ratCond() {
   flagDefault = true;
   conditionFlag[1] = true;
   uint32_t timer = millis();
@@ -61,34 +83,6 @@ void genaCond() {
   condition = 0;
 }
 
-void orangeCond() {
-  flagEmotion = false;
-  beginServo(flagEmotion);
-  flagDefault = false;
-  conditionFlag[3] = true;
-  earsOpen();
-  handOrange();
-  condition = 0;
-}
-void ratCond() {
-  NhandOrange();
-  //beginServo(flagEmotion);
-  flagDefault = false;
-  conditionFlag[2] = true;
-  stopm(5000);
-  spinRat(22000);
-  spinToGreen();
-  motorsFoots(-70, -70);
-  stopm(300);
-  motorsFoots(0, 0);
-  stopm(40);
-  //condRatReg();
-  stopm(1000);
-  handRightWrite(70, 8);
-  handLeftWrite(95, 8);
-  condition = 0;
-}
-
 void arUco1Cond() {
   conditionFlag[4] = true;
   handClap();
@@ -96,20 +90,14 @@ void arUco1Cond() {
 }
 
 void greenCond() {
-  flagDefault = false;
-  conditionFlag[4] = true;
-  stopm(200);
-  earsFly(2);
+  forwardEnc(2);
+  hi();
+  Serial.println("green cond");
+  stopm(2000);
+  circle(29);
   uint32_t timer = millis();
-  while (millis() - timer < 8000);
-  circle();
-  earsFly(20, 600);
+  while (millis() - timer < 2000);
   condition = 0;
-  /*conditionFlag[4] = true;
-    handClap();
-    uint32_t timer = millis();
-    while (millis() - timer < 2000);
-    condition = 0;*/
 }
 
 bool flagArUco = true;

@@ -149,10 +149,10 @@ void hi() {
   shoulRightWrite(90);
 }
 
-void circle() {
+void circle(int t = 10) {
   shoulRightWrite(110);
   shoulLeftWrite(70);
-  for (int j = 0; j < 11; j++) {
+  for (int j = 0; j < t; j++) {
     for (int i = 80; i < 120; i++) {
       handRightWrite(i);
       handLeftWrite(map(120 - i + 80, 80, 120, 85, 45));

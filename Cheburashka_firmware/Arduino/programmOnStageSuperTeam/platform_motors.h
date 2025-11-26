@@ -81,7 +81,7 @@ void _initEnc() {
 }
 
 int16_t len_to_pulses(float n) {
-  return (n / (3.14 * 0.1)) * 380;
+  return (n / (3.14 * 0.1)) * 372;
 }
 
 void _checkEnc() {
@@ -217,7 +217,7 @@ void speedControl(int rpmL, int rpmR, float kPspeed = 0.1, float kIspeed = 0.1) 
 
   float errL = (rpmL - speedL), errR = (rpmR - speedR);
   float uL = errL * kPspeed, uR = errR * kPspeed;
-  
+
   movement_of_foots();
   rotateLeft(uL); rotateRight(uR);
   /* Serial.print("speedL: ");
@@ -241,9 +241,9 @@ void stopm(uint32_t t = 2000) {
   }
 }
 
-void forwardEnc(int16_t dist = 1200, int velMx = 50, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+void forwardEnc(int16_t dist = 1200, float kM = 1,int velMx = 50, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
   zeroEnc();
-  dist = (len_to_pulses(dist));
+  dist = (len_to_pulses(dist)) * kM;
   int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
   float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
   velMx = abs(velMx);
@@ -273,7 +273,7 @@ void forwardEnc(int16_t dist = 1200, int velMx = 50, float kp = 10, float kd = 1
     movement_of_foots();
     encLReg = abs(encL);
     encRReg = abs(encR);
-    if ((encLReg + encRReg) < abs(dist)*1.5) vel = (encLReg + encRReg) / 2; else vel = abs(dist) - (encLReg + encRReg) / 2;
+    if ((encLReg + encRReg) < abs(dist) * 1.5) vel = (encLReg + encRReg) / 2; else vel = abs(dist) - (encLReg + encRReg) / 2;
     vel += 20;
     if (vel > velMx) vel = velMx;
     errEnc = (encRReg - encLReg);
@@ -283,13 +283,13 @@ void forwardEnc(int16_t dist = 1200, int velMx = 50, float kp = 10, float kd = 1
     rotateLeft(sgn(dist) * (vel + u));
     rotateRight(sgn(dist) * (vel - u));;
   }
-  motorsFoots(-70,-70);
+  motorsFoots(-70, -70);
   stopm(300);
-  motorsFoots(0,0);
+  motorsFoots(0, 0);
   stopm(40);
 }
 
-void turnEncRight(int16_t dist = 343, int velMx = 40, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+void turnEncRight(int16_t dist = -343, int velMx = 40, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
   zeroEnc();
   int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
   float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
@@ -308,7 +308,7 @@ void turnEncRight(int16_t dist = 343, int velMx = 40, float kp = 10, float kd = 
     u = float(errEnc) * kpReg + dEnc * kdReg + float(iEnc) * kiReg;
     errOldEnc = errEnc;
 
-    rotateLeft(sgn(dist)*constrain(vel + u, -velMx, velMx));
+    rotateLeft(-1*sgn(dist)*constrain(vel + u, -velMx, velMx));
     rotateRight(sgn(dist) * constrain((vel - u), -velMx, velMx));
     /* Serial.print("vel and u end: ");
       Serial.print(vel);
@@ -358,6 +358,31 @@ void turnTimeLeft(uint32_t t, int velMx = 60, float kp = 10, float kd = 1, float
   }
 }
 
+void turnTimeRight(uint32_t t, int velMx = 60, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+  zeroEnc();
+  int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
+  float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
+  velMx = abs(velMx);
+  uint32_t timer = millis();
+
+  while (millis() - timer < t) {
+    movement_of_foots();
+    encLReg = abs(encL);
+    encRReg = abs(encR);
+    vel = float(vel) * kv + 20;
+    if (vel > velMx) vel = velMx;
+    errEnc = (encRReg - encLReg);
+    u = float(errEnc) * kpReg;
+    rotateLeft(constrain((vel - u), -velMx, velMx));
+    rotateRight(-1 * constrain((vel + u), -velMx, velMx));//*/
+    /*Serial.print("errEnc and u: ");
+      Serial.print(errEnc);
+      Serial.print("  ");
+      Serial.println(u);
+      Serial.println();*/
+  }
+}
+
 void spinRat(uint32_t t) {
   turnTimeLeft(t);
 }
@@ -382,7 +407,7 @@ void spinToGreen(uint32_t t = 20000, int velMx = 30, float kp = 10, float kd = 1
     dataCheck();
     if (data == "aruco1") {
       flagToGreen = true;
-      motorsFoots(0,0);
+      motorsFoots(0, 0);
     }
   }
 }
@@ -416,7 +441,11 @@ void motorsAruco() {
   stopm(2000);
 }
 
-
+void motorsFootStop() {
+  motorsFoots(-70, -70);
+  stopm(300);
+  motorsFoots(0, 0);
+}
 
 /*-------------LIB MOTORS-------------*/
 void _stopmLib(uint32_t t = 1000) {

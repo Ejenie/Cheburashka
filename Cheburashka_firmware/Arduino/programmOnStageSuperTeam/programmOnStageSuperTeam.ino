@@ -9,8 +9,8 @@ void setup() {    //init
   _initMag();
   //_initDisplay();
 
-  stopm(8000);
-  conditionBegin();//*/
+  /* stopm(8000);
+    conditionBegin();//*/
   uint32_t timer = millis();
 }
 
@@ -20,18 +20,17 @@ void loop() {   //finite state machine
     case 0:
       defaultCond();
       break;
-    case 1:
-      genaCond();
+    case 1:    
+      pinkCond();
       break;
     case 2:
       ratCond();
       break;
-    case 3:
+    case 3:    
       orangeCond();
       break;
     case 4:
       greenCond();
-      break;
     default: break;
   }//*/
 }
