@@ -5,6 +5,59 @@ import numpy as np
 import math
 import time
 
+class MouthEllipse:
+    def __init__(self, canvas, center_x, center_y):
+        self.canvas = canvas
+        self.center_x = center_x
+        self.center_y = center_y
+        self.a = 80  # Уменьшенный размер по оси a
+        self.b_min = 20
+        self.b_max = 60
+        self.b_current = self.b_min
+        self.b_direction = 1
+        self.b_speed = 1.5
+        
+        self.color = "#800000"
+        self.outline_color = "#5D4037"  # Темно-коричневый цвет обводки
+        self.ellipse_id = None
+        
+        self.create_ellipse()
+    
+    def create_ellipse(self):
+        left = self.center_x - self.a
+        top = self.center_y - self.b_current
+        right = self.center_x + self.a
+        bottom = self.center_y + self.b_current
+        
+        self.ellipse_id = self.canvas.create_oval(
+            left, top, right, bottom,
+            fill=self.color, outline=self.outline_color, width=2, tags="mouth"
+        )
+    
+    def update_size(self, progress=None):
+        if progress is not None:
+            self.b_current = self.b_min + (self.b_max - self.b_min) * progress
+        
+        left = self.center_x - self.a
+        top = self.center_y - self.b_current
+        right = self.center_x + self.a
+        bottom = self.center_y + self.b_current
+        
+        self.canvas.coords(self.ellipse_id, left, top, right, bottom)
+    
+    def animate(self, dt):
+        self.b_current += self.b_direction * self.b_speed * dt * 60
+        
+        if self.b_current >= self.b_max:
+            self.b_current = self.b_max
+            self.b_direction = -1
+        elif self.b_current <= self.b_min:
+            self.b_current = self.b_min
+            self.b_direction = 1
+        
+        self.update_size()
+
+
 class GlintDraw:
     def __init__(self, root):
         self.root = root
@@ -27,11 +80,17 @@ class GlintDraw:
         self.linear_direction = "left"
         self.linear_progress = 0.0
         
-        image_path = "C:/Users/DELL/Desktop/мордочки/face_empty.png"
+        self.mouth_center_x = 640
+        self.mouth_center_y = 620  # Поднят на 20 пикселей выше
+        self.mouth_animation_speed = 2.0
+        self.mouth_animation_progress = 0.0
+        self.mouth_animation_direction = 1
+        self.mouth_ellipse = None
+        
+        image_path = "C:/Users/DELL/Desktop/мордочки/мордочка1.png"
             
         cv_image = cv2.imdecode(np.fromfile(image_path, dtype=np.uint8), cv2.IMREAD_COLOR)
             
-        #tkinter part
         cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
         self.face_image = Image.fromarray(cv_image)
         self.canvas = tk.Canvas(root, highlightthickness=0)
@@ -81,9 +140,49 @@ class GlintDraw:
             self.rotation_center_right[1] - self.SIZE_CENTER,
             self.rotation_center_right[0] + self.SIZE_CENTER,
             self.rotation_center_right[1] + self.SIZE_CENTER,
-            fill="red", outline="", tags="center")        
+            fill="red", outline="", tags="center")
+        
+        self.create_mouth()
         
         self.root.bind('<Configure>', self.on_resize)
+    
+    def create_mouth(self):
+        self.mouth_ellipse = MouthEllipse(self.canvas, self.mouth_center_x, self.mouth_center_y)
+    
+    def animate_mouth(self):
+        time_now = time.time()
+        if time_now - self.start_time >= self.TIME_LOOP:
+            self.stop_animation()
+            
+        if not self.flag_run:
+            return
+        
+        dt = 1.0 / self.FPS
+        self.mouth_ellipse.animate(dt)
+        
+        self.root.after(int(1000 / self.FPS), self.animate_mouth)
+    
+    def animate_mouth_linear(self):
+        time_now = time.time()
+        if time_now - self.start_time >= self.TIME_LOOP:
+            self.stop_animation()
+            
+        if not self.flag_run:
+            return
+        
+        self.mouth_animation_progress += (self.mouth_animation_direction * 
+                                        self.mouth_animation_speed / self.FPS)
+        
+        if self.mouth_animation_progress >= 1.0:
+            self.mouth_animation_progress = 1.0
+            self.mouth_animation_direction = -1
+        elif self.mouth_animation_progress <= 0.0:
+            self.mouth_animation_progress = 0.0
+            self.mouth_animation_direction = 1
+        
+        self.mouth_ellipse.update_size(self.mouth_animation_progress)
+        
+        self.root.after(int(1000 / self.FPS), self.animate_mouth_linear)
         
     def position_now(self, center, radius, angle):
         x = center[0] + radius * math.cos(angle)
@@ -113,6 +212,9 @@ class GlintDraw:
         self.update_pos(self.right_glint_id, new_right_pos)
         self.left_eye_glint_pos = new_left_pos
         self.right_eye_glint_pos = new_right_pos
+        
+        dt = 1.0 / self.FPS
+        self.mouth_ellipse.animate(dt)
         
         self.root.after(int(1000 / self.FPS), self.animate)
     
@@ -168,6 +270,9 @@ class GlintDraw:
         self.left_eye_glint_pos = new_left_pos
         self.right_eye_glint_pos = new_right_pos
         
+        dt = 1.0 / self.FPS
+        self.mouth_ellipse.animate(dt)
+        
         self.root.after(int(1000 / self.FPS), self.animate_linear)
     
     def inter(self, start, end, progress):
@@ -192,15 +297,21 @@ class GlintDraw:
         resized_image = self.face_image.resize((width, height), Image.Resampling.LANCZOS)
         self.tk_face_image = ImageTk.PhotoImage(resized_image)
         self.canvas.itemconfig(self.face_image_id, image=self.tk_face_image)
+        
+        self.mouth_center_x = width // 2
+        self.mouth_center_y = int(height * 0.8)
+        if self.mouth_ellipse:
+            self.mouth_ellipse.center_x = self.mouth_center_x
+            self.mouth_ellipse.center_y = self.mouth_center_y
+            self.mouth_ellipse.update_size()
+
 
 root = tk.Tk()
 while True:
     app = GlintDraw(root)
     app.start_time = time.time()
     app.TIME_LOOP = 15  
-
     
-    # app.animate()        
-    app.animate_linear()  
+    app.animate_mouth()
     
     root.mainloop()
