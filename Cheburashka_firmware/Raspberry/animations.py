@@ -5,6 +5,141 @@ import numpy as np
 import math
 import time
 
+
+class PupilMovement:
+    def __init__(self, canvas, eye_center_x, eye_center_y, pupil_radius=15, eye_radius=85):
+        self.canvas = canvas
+        self.eye_center_x = eye_center_x
+        self.eye_center_y = eye_center_y
+        self.pupil_radius = pupil_radius
+        self.eye_radius = eye_radius
+        
+        self.current_x = eye_center_x
+        self.current_y = eye_center_y
+        self.amplitude = eye_radius - pupil_radius - 5  
+        self.speed = 2.0 
+        self.direction = 1 
+        self.movement_progress = 0.0
+        
+        self.pupil_color = "#000000"  
+        self.pupil_outline = "#2A1610" 
+        
+        self.pupil_id = None
+        self.is_moving = True
+        
+        self.create_pupil()
+    
+    def create_pupil(self):
+        left = self.current_x - self.pupil_radius
+        top = self.current_y - self.pupil_radius
+        right = self.current_x + self.pupil_radius
+        bottom = self.current_y + self.pupil_radius
+        
+        self.pupil_id = self.canvas.create_oval(
+            left, top, right, bottom,
+            fill=self.pupil_color, 
+            outline=self.pupil_outline, 
+            width=2, 
+            tags="pupil"
+        )
+    
+    def update_position(self, progress=None):
+        if progress is not None:
+            movement = -self.amplitude + 2 * self.amplitude * progress
+        else:
+            movement = self.amplitude * math.sin(self.movement_progress * math.pi)
+        
+        self.current_x = self.eye_center_x + movement
+        
+        left = self.current_x - self.pupil_radius
+        top = self.current_y - self.pupil_radius
+        right = self.current_x + self.pupil_radius
+        bottom = self.current_y + self.pupil_radius
+        
+        self.canvas.coords(self.pupil_id, left, top, right, bottom)
+    
+    def animate_horizontal(self, dt):
+        if not self.is_moving:
+            return
+        
+        self.movement_progress += self.speed * dt
+        
+        if self.movement_progress >= 1.0:
+            self.movement_progress = 1.0
+            self.speed = -abs(self.speed)  
+        elif self.movement_progress <= 0.0:
+            self.movement_progress = 0.0
+            self.speed = abs(self.speed)  
+        
+        self.update_position()
+    
+    def animate_linear(self, dt):
+        if not self.is_moving:
+            return
+        
+        self.movement_progress += self.speed * dt
+        
+        if self.movement_progress >= 1.0:
+            self.movement_progress = 1.0
+            self.direction = -1
+        elif self.movement_progress <= 0.0:
+            self.movement_progress = 0.0
+            self.direction = 1
+        
+        start_x = self.eye_center_x - self.amplitude
+        end_x = self.eye_center_x + self.amplitude
+        
+        if self.direction == 1:
+            current_movement = start_x + (end_x - start_x) * self.movement_progress
+        else:
+            current_movement = end_x - (end_x - start_x) * self.movement_progress
+        
+        self.current_x = current_movement
+        self.update_position()
+    
+    def animate_smooth(self, dt):
+        if not self.is_moving:
+            return
+        
+        self.movement_progress += self.speed * dt
+        
+        sine_value = math.sin(self.movement_progress)
+        
+        progress_normalized = (sine_value + 1) / 2
+        
+        start_x = self.eye_center_x - self.amplitude
+        end_x = self.eye_center_x + self.amplitude
+        self.current_x = start_x + (end_x - start_x) * progress_normalized
+        
+        self.update_position()
+    
+    def set_target(self, target_x, target_y, speed=2.0):
+        dx = target_x - self.eye_center_x
+        dy = target_y - self.eye_center_y
+        distance = math.sqrt(dx**2 + dy**2)
+        
+        if distance > self.amplitude:
+            scale = self.amplitude / distance
+            target_x = self.eye_center_x + dx * scale
+            target_y = self.eye_center_y + dy * scale
+        
+        self.current_x += (target_x - self.current_x) * speed * 0.05
+        self.current_y += (target_y - self.current_y) * speed * 0.05
+        
+        self.update_position()
+    
+    def stop_movement(self):
+        self.is_moving = False
+    
+    def start_movement(self):
+        self.is_moving = True
+    
+    def set_center(self, center_x, center_y):
+        self.eye_center_x = center_x
+        self.eye_center_y = center_y
+        self.update_position()
+
+
 class MouthEllipse:
     def __init__(self, canvas, center_x, center_y):
         self.canvas = canvas
@@ -17,8 +152,8 @@ class MouthEllipse:
         self.b_direction = 1
         self.b_speed = 1.5
         
-        self.color = "#800000"
-        self.outline_color = "#5D4037"  
+        self.color = "#3D0101"
+        self.outline_color = "#2A1610"  
         self.ellipse_id = None
         
         self.create_ellipse()
@@ -142,10 +277,68 @@ class GlintDraw:
             self.rotation_center_right[1] + self.SIZE_CENTER,
             fill="red", outline="", tags="center")
         
+        self.left_pupil = PupilMovement(
+            self.canvas, 
+            self.rotation_center_left[0], 
+            self.rotation_center_left[1],
+            pupil_radius=15,
+            eye_radius=self.RADIUS
+        )
+        
+        self.right_pupil = PupilMovement(
+            self.canvas, 
+            self.rotation_center_right[0], 
+            self.rotation_center_right[1],
+            pupil_radius=15,
+            eye_radius=self.RADIUS
+        )
+
         self.create_mouth()
         
         self.root.bind('<Configure>', self.on_resize)
     
+    def animate_pupils_horizontal(self):
+        time_now = time.time()
+        if time_now - self.start_time >= self.TIME_LOOP:
+            self.stop_animation()
+            
+        if not self.flag_run:
+            return
+        
+        dt = 1.0 / self.FPS
+        self.left_pupil.animate_horizontal(dt)
+        self.right_pupil.animate_horizontal(dt)
+        
+        self.root.after(int(1000 / self.FPS), self.animate_pupils_horizontal)
+    
+    def animate_pupils_linear(self):
+        time_now = time.time()
+        if time_now - self.start_time >= self.TIME_LOOP:
+            self.stop_animation()
+            
+        if not self.flag_run:
+            return
+        
+        dt = 1.0 / self.FPS
+        self.left_pupil.animate_linear(dt)
+        self.right_pupil.animate_linear(dt)
+        
+        self.root.after(int(1000 / self.FPS), self.animate_pupils_linear)
+    
+    def animate_pupils_smooth(self):
+        time_now = time.time()
+        if time_now - self.start_time >= self.TIME_LOOP:
+            self.stop_animation()
+            
+        if not self.flag_run:
+            return
+        
+        dt = 1.0 / self.FPS
+        self.left_pupil.animate_smooth(dt)
+        self.right_pupil.animate_smooth(dt)
+        
+        self.root.after(int(1000 / self.FPS), self.animate_pupils_smooth)
+
     def create_mouth(self):
         self.mouth_ellipse = MouthEllipse(self.canvas, self.mouth_center_x, self.mouth_center_y)
     
@@ -305,6 +498,30 @@ class GlintDraw:
             self.mouth_ellipse.center_y = self.mouth_center_y
             self.mouth_ellipse.update_size()
 
+    def animate_all_together(self):
+        time_now = time.time()
+        if time_now - self.start_time >= self.TIME_LOOP:
+            self.stop_animation()
+        elif cv2.waitKey(1) == ord('q'):
+            quit()
+            
+        if not self.flag_run:
+            return
+        
+        dt = 1.0 / self.FPS
+        self.rotation_angle_left += self.rotation_speed
+        self.rotation_angle_right += self.rotation_speed
+        new_left_pos = self.position_now(
+            self.rotation_center_left, self.RADIUS, self.rotation_angle_left)
+        new_right_pos = self.position_now(
+            self.rotation_center_right, self.RADIUS, self.rotation_angle_right)
+        self.update_pos(self.left_glint_id, new_left_pos)
+        self.update_pos(self.right_glint_id, new_right_pos)
+        self.left_pupil.animate_smooth(dt)
+        self.right_pupil.animate_smooth(dt)
+        self.mouth_ellipse.animate(dt)
+        
+        self.root.after(int(1000 / self.FPS), self.animate_all_together)
 
 root = tk.Tk()
 while True:
@@ -312,6 +529,6 @@ while True:
     app.start_time = time.time()
     app.TIME_LOOP = 15  
     
-    app.animate_mouth()
+    app.animate_all_together()
     
     root.mainloop()
