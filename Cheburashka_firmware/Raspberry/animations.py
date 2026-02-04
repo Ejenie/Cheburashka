@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import math
 import time
+import os
 
 
 class PupilMovement:
@@ -200,7 +201,6 @@ class GlintDraw:
         self.root.attributes('-fullscreen', True)
         
         self.SIZE = 22
-        self.TIME_LOOP = 15
         self.GLINT_COLOR = "white"
         self.RADIUS = 85
         self.FPS = 60
@@ -222,7 +222,7 @@ class GlintDraw:
         self.mouth_animation_direction = 1
         self.mouth_ellipse = None
         
-        image_path = "C:/Users/DELL/Desktop/мордочки/мордочка1.png"
+        image_path = "C:/Users/DELL/reposGitHub/Cheburashka/Cheburashka_firmware/Raspberry/мордочка1.png"
             
         cv_image = cv2.imdecode(np.fromfile(image_path, dtype=np.uint8), cv2.IMREAD_COLOR)
             
@@ -237,7 +237,6 @@ class GlintDraw:
         self.rotation_angle_right = 0
         self.flag_run = True
         self.rotation_speed = 2 * math.pi / self.FPS
-        self.rotation_speed_2 = 2 * math.pi / self.FPS
         
         self.left_eye_glint_pos = self.position_now(
             self.rotation_center_left, 
@@ -295,27 +294,16 @@ class GlintDraw:
 
         self.create_mouth()
         
+        self.current_animation = None
+        self.animation_start_time = 0
+        self.animation_time_animate = 0
+        
         self.root.bind('<Configure>', self.on_resize)
     
-    def animate_pupils_horizontal(self):
-        time_now = time.time()
-        if time_now - self.start_time >= self.TIME_LOOP:
-            self.stop_animation()
-            
-        if not self.flag_run:
-            return
-        
-        dt = 1.0 / self.FPS
-        self.left_pupil.animate_horizontal(dt)
-        self.right_pupil.animate_horizontal(dt)
-        
-        self.root.after(int(1000 / self.FPS), self.animate_pupils_horizontal)
+    def create_mouth(self):
+        self.mouth_ellipse = MouthEllipse(self.canvas, self.mouth_center_x, self.mouth_center_y)
     
     def animate_pupils_linear(self):
-        time_now = time.time()
-        if time_now - self.start_time >= self.TIME_LOOP:
-            self.stop_animation()
-            
         if not self.flag_run:
             return
         
@@ -323,103 +311,13 @@ class GlintDraw:
         self.left_pupil.animate_linear(dt)
         self.right_pupil.animate_linear(dt)
         
-        self.root.after(int(1000 / self.FPS), self.animate_pupils_linear)
+        if self.current_animation == "animate_pupil_linear":
+            self.root.after(int(1000 / self.FPS), self.animate_pupils_linear)
     
-    def animate_pupils_smooth(self):
-        time_now = time.time()
-        if time_now - self.start_time >= self.TIME_LOOP:
-            self.stop_animation()
-            
+    def animate_glint_linear(self):
         if not self.flag_run:
             return
         
-        dt = 1.0 / self.FPS
-        self.left_pupil.animate_smooth(dt)
-        self.right_pupil.animate_smooth(dt)
-        
-        self.root.after(int(1000 / self.FPS), self.animate_pupils_smooth)
-
-    def create_mouth(self):
-        self.mouth_ellipse = MouthEllipse(self.canvas, self.mouth_center_x, self.mouth_center_y)
-    
-    def animate_mouth(self):
-        time_now = time.time()
-        if time_now - self.start_time >= self.TIME_LOOP:
-            self.stop_animation()
-            
-        if not self.flag_run:
-            return
-        
-        dt = 1.0 / self.FPS
-        self.mouth_ellipse.animate(dt)
-        
-        self.root.after(int(1000 / self.FPS), self.animate_mouth)
-    
-    def animate_mouth_linear(self):
-        time_now = time.time()
-        if time_now - self.start_time >= self.TIME_LOOP:
-            self.stop_animation()
-            
-        if not self.flag_run:
-            return
-        
-        self.mouth_animation_progress += (self.mouth_animation_direction * 
-                                        self.mouth_animation_speed / self.FPS)
-        
-        if self.mouth_animation_progress >= 1.0:
-            self.mouth_animation_progress = 1.0
-            self.mouth_animation_direction = -1
-        elif self.mouth_animation_progress <= 0.0:
-            self.mouth_animation_progress = 0.0
-            self.mouth_animation_direction = 1
-        
-        self.mouth_ellipse.update_size(self.mouth_animation_progress)
-        
-        self.root.after(int(1000 / self.FPS), self.animate_mouth_linear)
-        
-    def position_now(self, center, radius, angle):
-        x = center[0] + radius * math.cos(angle)
-        y = center[1] + radius * math.sin(angle)
-        return [int(x), int(y)]
-    
-    def stop_animation(self):
-        self.flag_run = False
-
-    def animate(self):
-        time_now = time.time()
-        if time_now - self.start_time >= self.TIME_LOOP:
-            self.stop_animation()
-        elif cv2.waitKey(1) == ord('q'):
-            quit()
-            
-        if not self.flag_run:
-            return
-            
-        self.rotation_angle_left += self.rotation_speed
-        self.rotation_angle_right += self.rotation_speed
-        new_left_pos = self.position_now(
-            self.rotation_center_left, self.RADIUS, self.rotation_angle_left)
-        new_right_pos = self.position_now(
-            self.rotation_center_right, self.RADIUS, self.rotation_angle_right)
-        self.update_pos(self.left_glint_id, new_left_pos)
-        self.update_pos(self.right_glint_id, new_right_pos)
-        self.left_eye_glint_pos = new_left_pos
-        self.right_eye_glint_pos = new_right_pos
-        
-        dt = 1.0 / self.FPS
-        self.mouth_ellipse.animate(dt)
-        
-        self.root.after(int(1000 / self.FPS), self.animate)
-    
-    def animate_linear(self):
-        time_now = time.time()
-        if time_now - self.start_time >= self.TIME_LOOP:
-            self.stop_animation()
-        elif cv2.waitKey(1) == ord('q'):
-            quit()
-            
-        if not self.flag_run:
-            return
         self.linear_progress += self.linear_speed / self.FPS
         
         if self.linear_progress >= 1.0:
@@ -463,10 +361,45 @@ class GlintDraw:
         self.left_eye_glint_pos = new_left_pos
         self.right_eye_glint_pos = new_right_pos
         
+        if self.current_animation == "animate_glint_linear":
+            self.root.after(int(1000 / self.FPS), self.animate_glint_linear)
+    
+    def animate_glint_circling(self):
+        if not self.flag_run:
+            return
+            
+        self.rotation_angle_left += self.rotation_speed
+        self.rotation_angle_right += self.rotation_speed
+        new_left_pos = self.position_now(
+            self.rotation_center_left, self.RADIUS, self.rotation_angle_left)
+        new_right_pos = self.position_now(
+            self.rotation_center_right, self.RADIUS, self.rotation_angle_right)
+        self.update_pos(self.left_glint_id, new_left_pos)
+        self.update_pos(self.right_glint_id, new_right_pos)
+        self.left_eye_glint_pos = new_left_pos
+        self.right_eye_glint_pos = new_right_pos
+        
+        if self.current_animation == "animate_glint_circling":
+            self.root.after(int(1000 / self.FPS), self.animate_glint_circling)
+    
+    def animate_mouth(self):
+        if not self.flag_run:
+            return
+        
         dt = 1.0 / self.FPS
         self.mouth_ellipse.animate(dt)
         
-        self.root.after(int(1000 / self.FPS), self.animate_linear)
+        if self.current_animation == "animate_mouth":
+            self.root.after(int(1000 / self.FPS), self.animate_mouth)
+    
+    def position_now(self, center, radius, angle):
+        x = center[0] + radius * math.cos(angle)
+        y = center[1] + radius * math.sin(angle)
+        return [int(x), int(y)]
+    
+    def stop_animation(self):
+        self.flag_run = False
+        self.current_animation = None
     
     def inter(self, start, end, progress):
         x = start[0] + (end[0] - start[0]) * progress
@@ -497,38 +430,73 @@ class GlintDraw:
             self.mouth_ellipse.center_x = self.mouth_center_x
             self.mouth_ellipse.center_y = self.mouth_center_y
             self.mouth_ellipse.update_size()
-
-    def animate_all_together(self):
-        time_now = time.time()
-        if time_now - self.start_time >= self.TIME_LOOP:
-            self.stop_animation()
-        elif cv2.waitKey(1) == ord('q'):
-            quit()
+    
+    def execute_scenery(self):       
+        try:
+            with open("C:/Users/DELL/reposGitHub/Cheburashka/Cheburashka_firmware/Raspberry/scenery.txt", 
+                      'r', encoding='utf-8') as file:
+                commands = file.read().strip().split('\n')
             
-        if not self.flag_run:
+            self.scenery_commands = commands
+            self.index_now = 0
+            self.run_next_command()
+
+        except FileNotFoundError:
+            print(f"Файл не найден")
+    
+    def run_next_command(self):
+        command_line = self.scenery_commands[self.index_now].strip()
+        
+        if command_line.lower() == "stop":
+            self.stop_animation()
             return
         
-        dt = 1.0 / self.FPS
-        self.rotation_angle_left += self.rotation_speed
-        self.rotation_angle_right += self.rotation_speed
-        new_left_pos = self.position_now(
-            self.rotation_center_left, self.RADIUS, self.rotation_angle_left)
-        new_right_pos = self.position_now(
-            self.rotation_center_right, self.RADIUS, self.rotation_angle_right)
-        self.update_pos(self.left_glint_id, new_left_pos)
-        self.update_pos(self.right_glint_id, new_right_pos)
-        self.left_pupil.animate_smooth(dt)
-        self.right_pupil.animate_smooth(dt)
-        self.mouth_ellipse.animate(dt)
+        parts = command_line.split()
+        if len(parts) != 2:
+            print("error", command_line)
+            self.index_now += 1
+            return
         
-        self.root.after(int(1000 / self.FPS), self.animate_all_together)
+        command = parts[0]
+        time_animate = int(parts[1])
+        
+        self.animation_start_time = time.time()
+        self.animation_time_animate = time_animate
+        self.current_animation = command
+        self.flag_run = True
+        
+        if command == "animate_pupil_linear":
+            self.animate_pupils_linear()
+        elif command == "animate_glint_linear":
+            self.animate_glint_linear()
+        elif command == "animate_glint_circling":
+            self.animate_glint_circling()
+        elif command == "animate_mouth":
+            self.animate_mouth()
+        else:
+            print("error", command)
+            self.index_now += 1
+            return
+        
+        self.check_time()
+    
+    def check_time(self):
+        if not self.flag_run or self.current_animation is None:
+            return
+        
+        current_time = time.time()
+        elapsed_time = current_time - self.animation_start_time
+        
+        if elapsed_time >= self.animation_time_animate:
+            self.current_animation = None
+            self.index_now += 1
+            self.root.after(10, self.run_next_command)
+        else:
+            self.root.after(100, self.check_time)
 
-root = tk.Tk()
+
 while True:
+    root = tk.Tk()
     app = GlintDraw(root)
-    app.start_time = time.time()
-    app.TIME_LOOP = 15  
-    
-    app.animate_all_together()
-    
+    app.execute_scenery()
     root.mainloop()
