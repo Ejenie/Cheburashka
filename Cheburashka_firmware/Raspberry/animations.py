@@ -5,6 +5,7 @@ import numpy as np
 import math
 import time
 import os
+import random
 
 
 class PupilMovement:
@@ -222,6 +223,8 @@ class GlintDraw:
         self.mouth_animation_direction = 1
         self.mouth_ellipse = None
         
+        self.scenarios_dir = "C:/Users/DELL/reposGitHub/Cheburashka/Cheburashka_firmware/Raspberry/scenarios/"
+        
         image_path = "C:/Users/DELL/reposGitHub/Cheburashka/Cheburashka_firmware/Raspberry/мордочка1.png"
             
         cv_image = cv2.imdecode(np.fromfile(image_path, dtype=np.uint8), cv2.IMREAD_COLOR)
@@ -431,10 +434,18 @@ class GlintDraw:
             self.mouth_ellipse.center_y = self.mouth_center_y
             self.mouth_ellipse.update_size()
     
-    def execute_scenery(self):       
-        try:
-            with open("C:/Users/DELL/reposGitHub/Cheburashka/Cheburashka_firmware/Raspberry/scenery.txt", 
-                      'r', encoding='utf-8') as file:
+    def execute_random_scenario(self):
+        try:            
+            scenario_files = [f for f in os.listdir(self.scenarios_dir) 
+                            if f.endswith('.txt')]
+            
+            if not scenario_files:
+                return
+            
+            random_file = random.choice(scenario_files)
+            file_path = os.path.join(self.scenarios_dir, random_file)
+            
+            with open(file_path, 'r', encoding='utf-8') as file:
                 commands = file.read().strip().split('\n')
             
             self.scenery_commands = commands
@@ -442,10 +453,19 @@ class GlintDraw:
             self.run_next_command()
 
         except FileNotFoundError:
-            print(f"Файл не найден")
+            print("Файл не найден")
     
     def run_next_command(self):
+        if self.index_now >= len(self.scenery_commands):
+            print("Сценарий завершен")
+            return
+        
         command_line = self.scenery_commands[self.index_now].strip()
+        
+        if not command_line:  # Пропускаем пустые строки
+            self.index_now += 1
+            self.root.after(10, self.run_next_command)
+            return
         
         if command_line.lower() == "stop":
             self.stop_animation()
@@ -453,8 +473,9 @@ class GlintDraw:
         
         parts = command_line.split()
         if len(parts) != 2:
-            print("error", command_line)
+            print(f"Ошибка в команде: {command_line}")
             self.index_now += 1
+            self.root.after(10, self.run_next_command)
             return
         
         command = parts[0]
@@ -474,8 +495,9 @@ class GlintDraw:
         elif command == "animate_mouth":
             self.animate_mouth()
         else:
-            print("error", command)
+            print(f"Неизвестная команда: {command}")
             self.index_now += 1
+            self.root.after(10, self.run_next_command)
             return
         
         self.check_time()
@@ -498,5 +520,5 @@ class GlintDraw:
 while True:
     root = tk.Tk()
     app = GlintDraw(root)
-    app.execute_scenery()
+    app.execute_random_scenario()
     root.mainloop()

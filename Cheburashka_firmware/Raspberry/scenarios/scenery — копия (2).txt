@@ -1,0 +1,6 @@
+animate_glint_circling 6
+animate_glint_linear 2
+animate_pupil_linear 3
+animate_glint_circling 6
+animate_mouth 10
+stop
