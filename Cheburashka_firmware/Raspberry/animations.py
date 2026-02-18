@@ -516,8 +516,7 @@ class GlintDraw:
         else:
             self.root.after(100, self.check_time)
 
-
-while True:
+def main():
     root = tk.Tk()
     app = GlintDraw(root)
     app.execute_random_scenario()

@@ -2,6 +2,7 @@ import cv2
 import time
 import os
 import numpy as np
+from animations import main
 
 window_name = "Fullscreen Image"
 
@@ -79,6 +80,7 @@ while True:
         cv2.circle(img, (yOrange,xOrange), 10, (50,200,78),-1)
     except: pass    
     if momOrange['m00'] > 70000:
+        main()
         sendToArduino(3)
     
     #125
@@ -94,6 +96,7 @@ while True:
         print(xRat)
     except: pass    
     if momRat['m00'] > 12000:
+        main()
         sendToArduino(2)
     
     #colorGreen
@@ -109,6 +112,7 @@ while True:
         print("green", momG['m00'])
     except: pass    
     if momG['m00'] > 12000:
+        main()
         sendToArduino(4)        
 
     if cv2.waitKey(1) == ord('q'):
