@@ -30,14 +30,14 @@ void condRatReg(int velMx = 0) {
 }
 
 void conditionBegin() {
-  forwardEnc(1);
+  forwardEnc(1);  
+  _initServo();
   hi();
   Serial.println("begin programm");
   stopm(2000);
   handClap();
   uint32_t timer = millis();
   while (millis() - timer < 2000);
-  turnServo();
   Serial.println("start serial");
 }
 
@@ -72,20 +72,20 @@ void orangeCond() {
 }
 void ratCond() {
   NhandOrange();
-  //beginServo(flagEmotion);
+  //_deinitServo();
+  beginServo(flagEmotion);
   flagDefault = false;
   conditionFlag[2] = true;
   stopm(5000);
+  //_deinitServo();
   spinRat(22000);
   spinToGreen();
-  motorsFoots(-70, -70);
-  stopm(300);
-  motorsFoots(0, 0);
   stopm(40);
   //condRatReg();
   stopm(1000);
-  handRightWrite(70, 8);
-  handLeftWrite(95, 8);
+  //_initServo();
+  //handRightWrite(70, 8);
+  //handLeftWrite(95, 8);
   condition = 0;
 }
 

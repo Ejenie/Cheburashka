@@ -1,5 +1,5 @@
 /*----------------------*/
-#include <Motors.h>
+//#include <Motors.h>
 #include "mpu.h"
 #include "serials.h"
 
@@ -40,8 +40,8 @@
 
 volatile int16_t encL = 0, encR = 0;
 
-Motors motorB = Motors(46, 24, 25, 0, 9); //A, B, PWM, INTERRUPT,
-Motors motorC = Motors(44, 22, 23, 1, 8);
+//Motors motorB = Motors(46, 24, 25, 0, 9); //A, B, PWM, INTERRUPT,
+//Motors motorC = Motors(44, 22, 23, 1, 8);
 /*----------------------*/
 //клаасс моторов платформы создавать н-
 int64_t timerL = 0, timerR = 0, time_encL = 0, time_encR = 0;
@@ -448,7 +448,8 @@ void motorsFootStop() {
 }
 
 /*-------------LIB MOTORS-------------*/
-void _stopmLib(uint32_t t = 1000) {
+
+/*void _stopmLib(uint32_t t = 1000) {
   uint32_t timer = millis();
   while (millis() - timer < t) {
     motorB.stop();
@@ -482,3 +483,4 @@ void _rightEncLib(int16_t enc = 254) {
   }
   _stopmLib();
 }
+*/

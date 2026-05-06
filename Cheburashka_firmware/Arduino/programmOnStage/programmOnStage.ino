@@ -1,21 +1,23 @@
 #include "condition.h"
 
-void setup() {    //init
+void setup() {  //init
   _initSerials();
   _initEnc();
   _initMotors();
-  _initServo();
+  //_initServo();
   //_initMPU();
-  _initMag();
+  // _initMag();
   //_initDisplay();
 
-  stopm(8000);
-  conditionBegin();//*/
+  spinRat(22000);
+/*  stopm(8000);
+  conditionBegin();  //*/
   uint32_t timer = millis();
 }
 
-void loop() {   //finite state machine
-  conditionUpdate();
+void loop() {  //finite state machine
+  //_checkEnc();
+  /*conditionUpdate();
   switch (condition) {
     case 0:
       defaultCond();

@@ -1,5 +1,5 @@
 /*----------------------*/
-#include <Motors.h>
+//#include <Motors.h>
 #include "mpu.h"
 #include "serials.h"
 
@@ -40,8 +40,8 @@
 
 volatile int16_t encL = 0, encR = 0;
 
-Motors motorB = Motors(46, 24, 25, 0, 9); //A, B, PWM, INTERRUPT,
-Motors motorC = Motors(44, 22, 23, 1, 8);
+//Motors motorB = Motors(46, 24, 25, 0, 9); //A, B, PWM, INTERRUPT,
+//Motors motorC = Motors(44, 22, 23, 1, 8);
 /*----------------------*/
 //клаасс моторов платформы создавать н-
 int64_t timerL = 0, timerR = 0, time_encL = 0, time_encR = 0;
@@ -50,8 +50,7 @@ void _encoderL() {
   if (digitalRead(ML_ENC_DIG)) {
     time_encL = -abs(time_encL);
     encL--;
-  }
-  else {
+  } else {
     time_encL = abs(time_encL);
     encL++;
   }
@@ -63,8 +62,7 @@ void _encoderR() {
   if (digitalRead(MR_ENC_DIG)) {
     time_encR = -abs(time_encR);
     encR--;
-  }
-  else {
+  } else {
     time_encR = abs(time_encR);
     encR++;
   }
@@ -81,15 +79,15 @@ void _initEnc() {
 }
 
 int16_t len_to_pulses(float n) {
-  return (n / (3.14 * 0.1)) * 380;
+  return (n / (3.14 * 0.1)) * 372;
 }
 
 void _checkEnc() {
   Serial.print("encL: ");
-  Serial.print(encL);//platform_encoders[0]);
+  Serial.print(digitalRead(26));  //platform_encoders[0]);
   Serial.print("\t");
   Serial.print("encR: ");
-  Serial.println(encR);//platform_encoders[1]);
+  Serial.println(digitalRead(27));  //platform_encoders[1]);
 }
 
 void _checkInt() {
@@ -135,8 +133,7 @@ void motorsFoots(int mL = 170, int mR = 170, uint32_t t = 500) {
   if (mL > 0) {
     digitalWrite(MFL_IN1, LOW);
     digitalWrite(MFL_IN2, HIGH);
-  }
-  else {
+  } else {
     digitalWrite(MFL_IN1, HIGH);
     digitalWrite(MFL_IN2, LOW);
   }
@@ -145,8 +142,7 @@ void motorsFoots(int mL = 170, int mR = 170, uint32_t t = 500) {
   if (mR > 0) {
     digitalWrite(MFR_IN1, LOW);
     digitalWrite(MFR_IN2, HIGH);
-  }
-  else {
+  } else {
     digitalWrite(MFR_IN1, HIGH);
     digitalWrite(MFR_IN2, LOW);
   }
@@ -156,25 +152,24 @@ void movement_of_foots(uint32_t t = 500) {
   static uint32_t timer = millis();
   if ((millis() - timer) < 550) {
     motorsFoots(-220, 140);
-  }
-  else if ((millis() - timer) < 900) {
+  } else if ((millis() - timer) < 900) {
     motorsFoots(145, -140);
-  }
-  else {
+  } else {
     timer = millis();
   }
 }
 
 int sgn(int n) {
-  if (n > 0) return 1; else return -1;
+  if (n > 0) return 1;
+  else return -1;
 }
 
 void zeroEnc() {
-  encL = 0; encR = 0;
+  encL = 0;
+  encR = 0;
 }
 
 void rotateLeft(int powerMotor) {
-  /*
     Serial.print("left: ");
     Serial.println(powerMotor); //*/
   int vel = map(abs(powerMotor), 0, 100, 0, 255);
@@ -182,8 +177,7 @@ void rotateLeft(int powerMotor) {
   if (powerMotor > 0) {
     digitalWrite(ML_A, HIGH);
     digitalWrite(ML_B, LOW);
-  }
-  else {
+  } else {
     digitalWrite(ML_A, LOW);
     digitalWrite(ML_B, HIGH);
   }
@@ -199,27 +193,28 @@ void rotateRight(int powerMotor) {
   if (powerMotor > 0) {
     digitalWrite(MR_A, LOW);
     digitalWrite(MR_B, HIGH);
-  }
-  else {
+  } else {
     digitalWrite(MR_A, HIGH);
     digitalWrite(MR_B, LOW);
   }
   analogWrite(MR_PWM, constrain(vel, -255, 255));
 }
 
-float speedL = 1, speedR = 1; float errOldL = 0, errOldR = 0, iLEnc = 0, iREnc = 0, errIL = 0, errIR = 0;
+float speedL = 1, speedR = 1;
+float errOldL = 0, errOldR = 0, iLEnc = 0, iREnc = 0, errIL = 0, errIR = 0;
 void speedControl(int rpmL, int rpmR, float kPspeed = 0.1, float kIspeed = 0.1) {
   /* speedL = (3.14 * 0.1) / ((time_encL) / 1000.0 * 380);
     speedR = (3.14 * 0.1) / ((time_encR) / 1000.0 * 380);*/
 
-  speedL = 60000000 / 100 / time_encL; // 1/time_enc * epr
+  speedL = 60000000 / 100 / time_encL;  // 1/time_enc * epr
   speedR = 60000000 / 100 / time_encR;
 
   float errL = (rpmL - speedL), errR = (rpmR - speedR);
   float uL = errL * kPspeed, uR = errR * kPspeed;
-  
-  movement_of_foots();
-  rotateLeft(uL); rotateRight(uR);
+
+  //movement_of_foots();
+  rotateLeft(uL);
+  rotateRight(uR);
   /* Serial.print("speedL: ");
     Serial.print(speedL);
     Serial.print("  speedR: ");
@@ -228,7 +223,6 @@ void speedControl(int rpmL, int rpmR, float kPspeed = 0.1, float kIspeed = 0.1) 
     Serial.print(uL);
     Serial.print("  uR: ");
     Serial.println(uR);//*/
-
 }
 
 void stopm(uint32_t t = 2000) {
@@ -236,44 +230,25 @@ void stopm(uint32_t t = 2000) {
   while (millis() - timer < t) {
     //rotateRight(-30);
     delay(200);
-    digitalWrite(ML_A, LOW); digitalWrite(ML_B, LOW);
-    digitalWrite(MR_A, LOW); digitalWrite(MR_B, LOW);
+    digitalWrite(ML_A, LOW);
+    digitalWrite(ML_B, LOW);
+    digitalWrite(MR_A, LOW);
+    digitalWrite(MR_B, LOW);
   }
 }
 
-void forwardEnc(int16_t dist = 1200, int velMx = 50, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+void forwardEnc(int16_t dist = 1200, float kM = 1, int velMx = 50, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
   zeroEnc();
-  dist = (len_to_pulses(dist));
+  dist = (len_to_pulses(dist)) * kM;
   int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
   float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
   velMx = abs(velMx);
-
-  /*while ((encLReg + encRReg) < abs(dist) * 2) {
-    // Serial.println("beginRegForward");
-    encLReg = abs(encL);
-    encRReg = abs(encR);
-    if ((encLReg + encRReg) < abs(dist)) vel = (encLReg + encRReg) / 2; else vel = abs(dist) - (encLReg + encRReg) / 2;
-    vel = float(vel) * kv + 20;
-    if (vel > velMx) vel = velMx;
-    kpReg = float(kp * vel) / 100.0;
-    errEnc = (encRReg - encLReg);
-    iEnc += errEnc;
-    if (sgn(errOldEnc) != sgn(errEnc)) iEnc = 0;
-    u = float(errEnc) * kpReg + dEnc * kdReg + float(iEnc) * kiReg;
-    errOldEnc = errEnc;
-    rotateLeft(sgn(dist) * (vel + u));
-    rotateRight( sgn(dist) * (vel - u));; //*/
-  /* Serial.print("vel and: ");
-    Serial.print(vel);
-    Serial.print("  ");
-    Serial.println(u);
-    Serial.println(); //
-    }*/
   while ((encLReg + encRReg) < abs(dist) * 2) {
-    movement_of_foots();
+    //movement_of_foots();
     encLReg = abs(encL);
     encRReg = abs(encR);
-    if ((encLReg + encRReg) < abs(dist)*1.5) vel = (encLReg + encRReg) / 2; else vel = abs(dist) - (encLReg + encRReg) / 2;
+    if ((encLReg + encRReg) < abs(dist) * 1.5) vel = (encLReg + encRReg) / 2;
+    else vel = abs(dist) - (encLReg + encRReg) / 2;
     vel += 20;
     if (vel > velMx) vel = velMx;
     errEnc = (encRReg - encLReg);
@@ -281,15 +256,43 @@ void forwardEnc(int16_t dist = 1200, int velMx = 50, float kp = 10, float kd = 1
     u = float(errEnc) * kp + float(iEnc) * kiReg;
     errOldEnc = errEnc;
     rotateLeft(sgn(dist) * (vel + u));
-    rotateRight(sgn(dist) * (vel - u));;
+    rotateRight(sgn(dist) * (vel - u));
+    ;
   }
-  motorsFoots(-70,-70);
+  //motorsFoots(-70, -70);
   stopm(300);
-  motorsFoots(0,0);
+  //motorsFoots(0, 0);
   stopm(40);
 }
 
-void turnEncRight(int16_t dist = 343, int velMx = 40, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+void forwardTime(int32_t time = 2000, int16_t dist = 1200, float kM = 1, int velMx = 50, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+  dist = (len_to_pulses(dist)) * kM;
+  int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
+  float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
+  velMx = abs(velMx);
+  uint32_t timer = millis();
+  while (millis() - timer < time) {
+    encLReg = abs(encL);
+    encRReg = abs(encR);
+    if ((encLReg + encRReg) < abs(dist) * 1.5) vel = (encLReg + encRReg) / 2;
+    else vel = abs(dist) - (encLReg + encRReg) / 2;
+    vel += 20;
+    if (vel > velMx) vel = velMx;
+    errEnc = (encRReg - encLReg);
+    iEnc += errEnc;
+    u = float(errEnc) * kp + float(iEnc) * kiReg;
+    errOldEnc = errEnc;
+    rotateLeft(sgn(dist) * (vel + u));
+    rotateRight(sgn(dist) * (vel - u));
+    ;
+  }
+  //motorsFoots(-70, -70);
+  stopm(300);
+  //motorsFoots(0, 0);
+  stopm(40);
+}
+
+void turnEncRight(int16_t dist = -343, int velMx = 40, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
   zeroEnc();
   int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
   float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
@@ -308,7 +311,7 @@ void turnEncRight(int16_t dist = 343, int velMx = 40, float kp = 10, float kd = 
     u = float(errEnc) * kpReg + dEnc * kdReg + float(iEnc) * kiReg;
     errOldEnc = errEnc;
 
-    rotateLeft(sgn(dist)*constrain(vel + u, -velMx, velMx));
+    rotateLeft(-1 * sgn(dist) * constrain(vel + u, -velMx, velMx));
     rotateRight(sgn(dist) * constrain((vel - u), -velMx, velMx));
     /* Serial.print("vel and u end: ");
       Serial.print(vel);
@@ -333,15 +336,16 @@ void turnEncLeft(int16_t dist = -1200, int velMx = 220, float kp = 10, float kd 
   _checkEnc();
 }
 
-void turnTimeLeft(uint32_t t, int velMx = 60, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+void turnTimeLeft(uint32_t t, int velMx = 60, float kp = 10, float kd = 10, float ki = 0.001, float kv = 0.1) {
   zeroEnc();
   int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
   float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
   velMx = abs(velMx);
   uint32_t timer = millis();
+  Serial.println("start");
 
   while (millis() - timer < t) {
-    movement_of_foots();
+    Serial.println(constrain((vel + u), -velMx, velMx));
     encLReg = abs(encL);
     encRReg = abs(encR);
     vel = float(vel) * kv + 20;
@@ -349,7 +353,32 @@ void turnTimeLeft(uint32_t t, int velMx = 60, float kp = 10, float kd = 1, float
     errEnc = (encRReg - encLReg);
     u = float(errEnc) * kpReg;
     rotateLeft(-1 * constrain((vel - u), -velMx, velMx));
-    rotateRight(constrain((vel + u), -velMx, velMx));//*/
+    rotateRight(constrain((vel + u), -velMx, velMx));  //*/
+    /*Serial.print("errEnc and u: ");
+      Serial.print(errEnc);
+      Serial.print("  ");
+      Serial.println(u);
+      Serial.println();*/
+  }
+}
+
+void turnTimeRight(uint32_t t, int velMx = 60, float kp = 10, float kd = 1, float ki = 0.001, float kv = 0.1) {
+  zeroEnc();
+  int16_t encLReg = encL, encRReg = encR, errOldEnc = 0, errEnc = 0, dEnc = 0, iEnc = 0, vel = 0;
+  float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
+  velMx = abs(velMx);
+  uint32_t timer = millis();
+
+  while (millis() - timer < t) {
+    //movement_of_foots();
+    encLReg = abs(encL);
+    encRReg = abs(encR);
+    vel = float(vel) * kv + 20;
+    if (vel > velMx) vel = velMx;
+    errEnc = (encRReg - encLReg);
+    u = float(errEnc) * kpReg;
+    rotateLeft(constrain((vel - u), -velMx, velMx));
+    rotateRight(-1 * constrain((vel + u), -velMx, velMx));  //*/
     /*Serial.print("errEnc and u: ");
       Serial.print(errEnc);
       Serial.print("  ");
@@ -359,6 +388,7 @@ void turnTimeLeft(uint32_t t, int velMx = 60, float kp = 10, float kd = 1, float
 }
 
 void spinRat(uint32_t t) {
+  Serial.println("spinRat");
   turnTimeLeft(t);
 }
 
@@ -370,7 +400,7 @@ void spinToGreen(uint32_t t = 20000, int velMx = 30, float kp = 10, float kd = 1
   float u = 0, kpReg = 0, kdReg = 0, kiReg = 0;
   velMx = abs(velMx);
   while (!flagToGreen) {
-    movement_of_foots();
+    //movement_of_foots();
     encLReg = abs(encL);
     encRReg = abs(encR);
     vel = float(vel) * kv + 20;
@@ -382,7 +412,7 @@ void spinToGreen(uint32_t t = 20000, int velMx = 30, float kp = 10, float kd = 1
     dataCheck();
     if (data == "aruco1") {
       flagToGreen = true;
-      motorsFoots(0,0);
+      motorsFoots(0, 0);
     }
   }
 }
@@ -416,10 +446,14 @@ void motorsAruco() {
   stopm(2000);
 }
 
-
+void motorsFootStop() {
+  motorsFoots(-70, -70);
+  stopm(300);
+  motorsFoots(0, 0);
+}
 
 /*-------------LIB MOTORS-------------*/
-void _stopmLib(uint32_t t = 1000) {
+/*void _stopmLib(uint32_t t = 1000) {
   uint32_t timer = millis();
   while (millis() - timer < t) {
     motorB.stop();
@@ -453,3 +487,4 @@ void _rightEncLib(int16_t enc = 254) {
   }
   _stopmLib();
 }
+*/

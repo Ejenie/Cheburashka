@@ -2,20 +2,21 @@
 
 void setup() {    //init
   _initSerials();
-  _initEnc();
+  //_initEnc();
   _initMotors();
   _initServo();
   //_initMPU();
   _initMag();
   //_initDisplay();
 
+  forwardEnc(1);
   /* stopm(8000);
     conditionBegin();//*/
   uint32_t timer = millis();
 }
 
 void loop() {   //finite state machine
-  conditionUpdate();
+  /*conditionUpdate();
   switch (condition) {
     case 0:
       defaultCond();
